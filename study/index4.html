@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<script>
+  const width = 500
+  const height = 500
+  // const dataset = [5, 10, 15, 20, 25]
+  // const svg = d3.select('svg').attr('width', width).attr('height', height)
+  //
+  // const circles = d3.selectAll('circle').data(dataset).enter().append('circle')
+  //
+  // circles
+  //     .attr('cx', function (d, i) {
+  //       return (i * 50) + 25
+  //     })
+  //     .attr('cy', height / 2)
+  //     .attr('r', d => d)
+  //
+  // d3.select('ul').data([1]).enter().append('ul')
+
+  const svg = d3.select('body').append('svg')
+      .attr('width', width)
+      .attr('height', height)
+  const circle = svg.append('circle')
+      .attr('cx', 50)
+      .attr('cy', 50)
+      .attr('r', 30)
+  console.log(svg, circle)
+</script>
+</body>
+</html>

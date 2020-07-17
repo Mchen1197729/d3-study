@@ -59,7 +59,7 @@
       .range([height - margin.bottom, margin.top])
 
   const svg = d3.select("svg")
-      .attr("viewBox", [0, 0, width, height]);
+      .attr("viewBox", [0, 0, width, height])
 
   svg.append("g")
       .attr("fill", color)
@@ -69,10 +69,10 @@
       .attr("x", (d, i) => x(i))
       .attr("y", d => y(d.value))
       .attr("height", d => y(0) - y(d.value))
-      .attr("width", x.bandwidth());
+      .attr("width", x.bandwidth())
 
   svg.append("g")
-      .call(xAxis);
+      .call(xAxis)
 
   svg.append("g")
       .call(yAxis)
