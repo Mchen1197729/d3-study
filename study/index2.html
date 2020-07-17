@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <style>
+    .box {
+      width: 50px;
+      height: 50px;
+      background-color: tomato;
+    }
+  </style>
+</head>
+<body>
+<div class="box"></div>
+<p>1</p>
+<p>2</p>
+<hr>
+<button id="btn">click me</button>
+<script>
+  const button = document.getElementById('btn')
+  button.addEventListener('click', e => {
+    let box = d3.select('.box')
+        .style('width', '100px')
+        .transition()
+        .duration(1000)
+        .style('width', '300px')
+  })
+
+  const str = '我是被绑定的数据'
+  d3.selectAll('p').datum(str).text(function (d, i) {
+    return `第${i}个元素绑定的数据是:${d}`
+  })
+</script>
+</body>
+</html>

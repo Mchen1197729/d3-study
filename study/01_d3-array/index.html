@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-array</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<script>
+  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  // const min = d3.min(arr)
+  // const max = d3.max(arr)
+  // console.log(min, max)
+
+  /*
+  * d3.extent(array[,accessor]):[min,max]
+  * 求最大最小值
+  *   access是一个可选的函数 如果传入accessor的值 那么会在获取最值之前使用array.map(accessor)进行计算
+  * */
+  const [min, max] = d3.extent(arr, (item, index) => item + index)
+  console.log(min, max)
+
+  /*
+  * d3.sum(array[,accessor]):Number
+  * 求和
+  * */
+  const sum = d3.sum(arr, (item, index) => item + index)
+  console.log(sum)
+
+  /*
+  * d3.mean(array[,accessor])
+  * 求平均值
+  * */
+  const mean = d3.mean(arr, (item, index) => item + index)
+  console.log(mean)
+</script>
+</body>
+</html>

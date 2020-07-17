@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>d3-selection</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<div id="Ford"></div>
+<div id="Jarrah"></div>
+<div id="Kwon"></div>
+<div id="Locke"></div>
+<div id="Reyes"></div>
+<div id="Shephard"></div>
+<script>
+  const data = [
+    {name: "Locke", number: 4},
+    {name: "Reyes", number: 8},
+    {name: "Ford", number: 15},
+    {name: "Jarrah", number: 16},
+    {name: "Shephard", number: 31},
+    {name: "Kwon", number: 34}
+  ]
+  d3.selectAll('div')
+      .data(data)
+      .text(d => d.name)
+</script>
+</body>
+</html>

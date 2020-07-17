@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<h1>Study D3.js</h1>
+<div class="p-container0">
+  <p>This is the first p tag</p>
+  <p>This is the second p tag</p>
+</div>
+<h2>This is the first h2 tag</h2>
+<h2>This is the second h2 tag</h2>
+<h2>This is the third h2 tag</h2>
+<hr>
+<div class='p-container1'>
+  <p>1</p>
+  <p>2</p>
+  <p>3</p>
+  <p>4</p>
+</div>
+<div class="p-container2">
+  <p>1</p>
+  <p>2</p>
+  <p>3</p>
+  <p>4</p>
+</div>
+<hr>
+<div class="p-container3">
+</div>
+<script>
+  d3.select('.p-container0').selectAll('p').style('color', 'tomato').style('font-size', '24px')
+  /*
+  * 动态属性
+  * 1.一旦动态绑定了数值data 后续操作就不需要再次绑定了 因为d3会记住绑定过的数值
+  * 2.enter&exit:再进行数据绑定的时候可能会出现数据个数和dom元素个数不一致的问题
+  *   当数据元素多余dom的个数的时候使用enter
+  *   当数据元素少于dom元素的时候使用exit
+  * */
+  d3.selectAll('h2').data([2, 4, 6]).style('color', (d, i) => {
+    /*
+    * d是绑定的data中对应的元素
+    * i就是下标 从0开始
+    * */
+    console.log(d, i)
+    return "hsl(" + Math.random() * 360 + ",100%,50%)"
+  })
+
+  //1.绑定的数据元素多余dom元素
+  d3.select('.p-container1')
+      .selectAll('p')
+      .data([1, 2, 3, 4, 5])
+      .enter().append("p")
+      .text(d => "I’m number " + d + "!")
+
+  //2.绑定数据元素少于dom元素
+  d3.select('.p-container2')
+      .selectAll('p')
+      .data([1, 2, 3])
+      .style('color', 'yellowgreen')
+      .exit().remove()
+
+  //3.通常情况下 我们根本不知道绑定的数据元素个数和dom元素的个数之间的关系 因此需要使用下面的写法
+  let pTag = d3.select('.p-container3')
+      .selectAll('p')
+      .data([1, 2, 3, 4, 5, 6])
+      .style('color', 'tomato')
+      .text(d => `我是第${d}个p`)
+  pTag.enter().append('p').style('color', 'tomato').text(d => `我是第${d}个p`)
+  pTag.exit().remove()
+
+  //过渡效果
+  // d3.select("body").transition().duration(750).style("background-color", "#eee").style('font-size', '20px')
+
+  //设置不同的延迟
+  d3.selectAll('*').transition().duration(1000).delay((d, i) => i * 100).style('font-size', '30px')
+</script>
+</body>
+</html>
