@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  const data = [
+    {date: new Date(2007, 3, 24), value: 93.24},
+    {date: new Date(2007, 3, 25), value: 95.35},
+    {date: new Date(2007, 3, 26), value: 98.84},
+    {date: new Date(2007, 3, 27), value: 99.92},
+    {date: new Date(2007, 3, 30), value: 99.80},
+    {date: new Date(2007, 4, 1), value: 99.47}
+  ]
+  let line = d3.line()
+      .x(d => d.date)
+      .y(d => d.value)
+  d3
+      .select('body')
+      .append('svg')
+      .attr('viewBox', '0 0 300 150')
+      .append('path')
+      .attr('stroke', 'steelblue')
+      .attr('fill', 'none')
+      .attr('stroke-width', 1.5)
+      .attr('stroke-miterlimit', 1)
+      .attr('d', line(data))
+</script>
+</body>
+</html>

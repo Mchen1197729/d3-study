@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-shape:arc</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+  <style>
+    #svg {
+      width: 500px;
+      height: 500px;
+      margin: 300px auto;
+    }
+  </style>
+</head>
+<body>
+<svg id="svg">
+  <path></path>
+</svg>
+<script>
+  /*
+  * 1.d3.arc() -> 返回一个arc生成器(一个函数)
+  * */
+  const arc = d3.arc()
+      .innerRadius(0) //扇形的内径
+      .outerRadius(100) //扇形的外径
+      .startAngle(0) //扇形的起始角度
+      .endAngle(Math.PI / 2) //扇形的终止角度
+
+  console.log(arc())
+  d3.select('svg').select('path').attr('d', arc).style('scale', '90deg')
+  console.log([...'hello'].reverse().join(''))
+
+  // const dataset = [1,2,3,4,5,6,7,8,9]
+  const dataset = [
+    {
+      date: '2020-01', temperature: 23.5
+    },
+    {
+      date: '2020-02', temperature: 23.5
+    },
+    {
+      date: '2020-03', temperature: 23.5
+    },
+    {
+      date: '2020-04', temperature: 23.5
+    }
+  ]
+  console.log(d3.extent(dataset, d => d.date))
+  console.log(d3.extent(dataset, d => d.temperature))
+</script>
+</body>
+</html>
