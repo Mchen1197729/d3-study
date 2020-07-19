@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>README</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  /*
+  * 1.两个顶级的选择方法 d3.select() d3.selectAll() 会查找整个文档
+  *   两个子选择方法 selection.select() selection.selectAll()会在指定的范围进行查找
+  *
+  *
+  * */
+  d3.select("body")
+      .append("svg")
+        .attr("width", 960)
+        .attr("height", 500)
+      .append("g")
+        .attr("transform", "translate(20,20)")
+      .append("rect")
+        .attr("width", 320)
+        .attr("height", 360)
+</script>
+</body>
+</html>

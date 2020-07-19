@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<div id="Jack"></div>
+<div id="Rose"></div>
+<div id="Jerry"></div>
+<div id="Tom"></div>
+<ul id="list">
+  <li data-username="shawnbot">Shawn Allen</li>
+  <li data-username="mbostock">Mike Bostock</li>
+</ul>
+<script>
+  const data = [
+    {name: "Jerry", number: 5},
+    {name: "Jack", number: 20},
+    {name: "Tom", number: 6},
+    {name: "Rose", number: 18}
+  ]
+  const div = d3.selectAll("div")
+      .data(data, function (d) {
+        console.log(d)
+        return d ? d.name : this.id
+      })
+      .text(function (d) {
+        return d.number
+      })
+  console.log(div)
+
+
+  d3.select('#list')
+      .selectAll('li')
+      .datum(function () {
+        return this.dataset
+      })
+      .style('color', function (d) {
+        console.log(d)
+        return 'tomato'
+      })
+</script>
+</body>
+</html>

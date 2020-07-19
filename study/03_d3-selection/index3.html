@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<ul>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+<div id="box"></div>
+<ul id="ul-box"></ul>
+<script>
+  d3
+      .select('ul')
+      .selectAll('li')
+      .attr('id', function (d, i, nodes) {
+        console.log(nodes)
+        return i % 2 ? 'li--' + i : null
+      })
+
+  d3.select('div')
+      .text('Hello World')
+      .style('color', 'tomato', 'important')
+
+  d3.select('#ul-box')
+      .insert(function (d,i) {
+        return document.createElement('li')
+      })
+
+  console.log(d3.creator('a'))
+</script>
+</body>
+</html>
