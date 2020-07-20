@@ -12,8 +12,8 @@
       .then(response => {
         const margin = {top: 20, right: 0, bottom: 30, left: 40}
         const height = 300, width = 750
-        console.log(response.data)
         const data = d3.csvParse(response.data, d3.autoType)
+        console.log(data)
 
         /*
         * 1.此处X轴用来表示每种字母(letter) Y轴用来表示对应的字母的使用频率(frequency)
@@ -32,14 +32,17 @@
 
         const svg = d3.create('svg')
             .attr('viewBox', [0, 0, width, height])
+            .style('background', '#eee')
 
         //添加X轴--最直接的写法
         svg.append("g")
+            //X轴本来是跟屏幕的顶部对齐的 向下平移一段距离使得X轴符合人类的习惯
             .attr("transform", `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x))
+            .call(d3.axisBottom(x).tickSizeOuter(0))
 
         //添加Y轴--最直接的写法
         svg.append("g")
+            //Y轴本来是跟屏幕的左边对齐的 向右平移一段距离 使得Y轴符合人类的习惯
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).ticks(null, "%"))
 
@@ -48,6 +51,7 @@
             .attr("font-family", "sans-serif")
             .attr("font-size", 10)
             .attr("y", 10)
+            .attr("x", 0) //如果值为0 则可以省略
             .text("使用频率")
 
         //向svg中添加矩形
@@ -58,8 +62,8 @@
             .join("rect")
             .attr("x", d => x(d.letter)) //rect标签左上角的横坐标
             .attr("y", d => y(d.frequency)) //rect标签左上角的纵坐标
-            .attr("height", d => y(0) - y(d.frequency)) //*
             .attr("width", x.bandwidth())
+            .attr("height", d => y(0) - y(d.frequency)) //*
 
         // const yAxis = g => g
         //     .attr("transform", `translate(${margin.left},0)`)
