@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thinking With Joins③</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/d3/5.16.0/d3.js"></script>
+</head>
+<body>
+<svg width="720" height="120" style="background:#eee">
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+</svg>
+<script>
+  /*
+      .attr('fill', 'steelblue')
+      .attr('cx', d => Math.sqrt(d) + 2 * d)
+      .attr('cy', 50)
+      .attr('r', d => Math.sqrt(d) * 2)
+   */
+  let data = [32, 57, 112, 252, 300]
+  const svg = d3.select('svg')
+
+  const circles = svg.selectAll('circle')
+      .data(data)
+
+  circles.exit().remove()
+
+  circles.enter().append('circle')
+          .attr("r", 0)
+          .attr('cx',0)
+          .attr('cy',0)
+      .merge(circles)
+      .transition()
+      // .delay(300)
+      .duration(1000)
+          .attr('r',25)
+          .attr('fill', 'steelblue')
+          .attr('cx', d => Math.sqrt(d) + 2 * d)
+          .attr('cy', 50)
+          .attr('r', d => Math.sqrt(d) * 2)
+</script>
+</body>
+</html>
