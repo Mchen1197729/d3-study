@@ -31,7 +31,11 @@
 <div class="p-container3">
 </div>
 <script>
-  d3.select('.p-container0').selectAll('p').style('color', 'tomato').style('font-size', '24px')
+  d3
+      .select('.p-container0')
+      .selectAll('p')
+          .style('color', 'tomato')
+          .style('font-size', '24px')
   /*
   * 动态属性
   * 1.一旦动态绑定了数值data 后续操作就不需要再次绑定了 因为d3会记住绑定过的数值
@@ -39,7 +43,10 @@
   *   当数据元素多余dom的个数的时候使用enter
   *   当数据元素少于dom元素的时候使用exit
   * */
-  d3.selectAll('h2').data([2, 4, 6]).style('color', (d, i) => {
+  d3
+      .selectAll('h2')
+      .data([2, 4, 6])
+        .style('color', (d, i) => {
     /*
     * d是绑定的data中对应的元素
     * i就是下标 从0开始
@@ -49,25 +56,29 @@
   })
 
   //1.绑定的数据元素多余dom元素
-  d3.select('.p-container1')
+  d3
+      .select('.p-container1')
       .selectAll('p')
       .data([1, 2, 3, 4, 5])
-      .enter().append("p")
-      .text(d => "I’m number " + d + "!")
+        .enter().append("p")
+        .text(d => "I’m number " + d + "!")
 
   //2.绑定数据元素少于dom元素
-  d3.select('.p-container2')
+  d3
+      .select('.p-container2')
       .selectAll('p')
       .data([1, 2, 3])
-      .style('color', 'yellowgreen')
-      .exit().remove()
+        .style('color', 'yellowgreen')
+        .exit().remove()
 
   //3.通常情况下 我们根本不知道绑定的数据元素个数和dom元素的个数之间的关系 因此需要使用下面的写法
-  let pTag = d3.select('.p-container3')
-      .selectAll('p')
-      .data([1, 2, 3, 4, 5, 6])
-      .style('color', 'tomato')
-      .text(d => `我是第${d}个p`)
+  let pTag = d3
+              .select('.p-container3')
+              .selectAll('p')
+              .data([1, 2, 3, 4, 5, 6])
+                .style('color', 'tomato')
+                .text(d => `我是第${d}个p`)
+
   pTag.enter().append('p').style('color', 'tomato').text(d => `我是第${d}个p`)
   pTag.exit().remove()
 

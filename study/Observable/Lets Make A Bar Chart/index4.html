@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lets Make A Bar Chart 4</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<script>
+  axios.get('./numbers.csv')
+      .then(response => {
+        // 此处如果不加上第二个参数 那么d3默认将所有值都转换成字符串
+        // 奖赏第二个参数 对会将数字转换成数值类型
+        console.log(d3.csvParse(response.data, d3.autoType))
+        const width = 420
+        const data = d3.csvParse(response.data, d3.autoType)
+
+        /*
+        * 1.此处返回的x y就是用来计算的函数 调用会返回一个数值
+        * 2.而x.range()和y.range()会返回一个数组 格式为[min,max]
+        * 3.调用不同的scaleXxx()方法返回的值也有不同的功能 但是有些功能是通用的
+        * */
+        const x = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)]) //此处就是[min,max]的形式
+            .range([0, width])
+
+        const y = d3.scaleBand()
+            .domain(d3.range(data.length)) //这里必须是一个连续的数组 不能是[min,max]这种形式
+            .range([0, 30 * data.length]) //*
+
+
+        const svg = d3.create('svg')
+            .attr('width', width)
+            .attr('height', y.range()[1]) //* y.range()返回一个[min,max]类型的数组
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', '10px')
+            .attr('text-anchor', 'end') //text-anchor表示文字的对齐方式:start,middle,end
+            .style('background', '#eee')
+
+        const bar = svg.selectAll('g')
+            .data(data)
+            .join('g')
+            .attr('transform', (d, i) => `translate(0,${y(i)})`) //*
+
+        bar.append('rect')
+            .attr('fill', 'steelblue')
+            .attr('width', d => x(d.value))
+            .attr('height', y.bandwidth() - 5) //*
+
+        bar.append('text')
+            .attr('fill', 'white') //text文本的颜色也使用fill属性来定义
+            .attr('stroke-width', '2')
+            .attr('x', d => x(d.value) - 5)
+            .attr('y', y.bandwidth() / 2) //*
+            .attr('dy', '0.3em') //*dx dy分别表示x y方向的偏移
+            .text(d => d.value)
+
+        document.body.appendChild(svg.node())
+        console.log(svg.node())
+      })
+</script>
+</body>
+</html>

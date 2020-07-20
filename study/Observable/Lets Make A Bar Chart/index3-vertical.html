@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lets Make A Bar Chart 3-vertical </title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  /*
+  * 纵向的条形图
+  * */
+  const data = [4, 8, 15, 16, 23, 42]
+  const height = 520
+
+  const x = d3.scaleBand()
+      .domain(d3.range(data.length)) //X轴数据的范围(虚拟)
+      .range([0, 30 * data.length]) //X轴视觉的范围(真实)
+
+  const y = d3.scaleLinear()
+      .domain([0, d3.max(data)]) //Y轴数据的范围(虚拟)
+      .range([0, height]) //Y轴视觉的范围(真实)
+  console.log(x.range(), y.range(), x.bandwidth()) // 返回值格式:[min,max]
+
+  const svg = d3.create("svg")
+      .attr("height", height) //svg标签占据的高
+      .attr("width", x.range()[1]) //svg标签占据的宽
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10")
+      .attr("text-anchor", "end")
+      .style('background', '#eee')
+
+  const bar = svg.selectAll("g")
+      .data(data)
+      .join("g")
+      .attr("transform", (d, i) => `translate(${x(i)},0)`) //对g标签进行变换 使得每个g标签依次向下排列
+
+  bar.append("rect")
+      .attr("fill", "steelblue")
+      .attr("width", x.bandwidth() - 5) //y.bandwidth()就是每个x轴的宽度 -1是为了留下间隙
+      .attr("height", y)
+
+  bar.append("text")
+      .attr("fill", "white")
+      .attr("x", d => x.bandwidth() / 2)
+      .attr("y", d => y(d) - 10)
+      .attr("dy", "0.35em")
+      .text(d => d)
+
+  document.body.appendChild(svg.node())
+</script>
+</body>
+</html>

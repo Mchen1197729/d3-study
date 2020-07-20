@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lets Make A Bar Chart2</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  const data = [4, 8, 15, 16, 23, 42]
+
+  const x = d3.scaleLinear()
+      .domain([0, d3.max(data)])
+      .range([0, 520])
+
+  const div = d3
+      .create("div")
+      .style("font", "10px sans-serif")
+      .style("text-align", "right")
+      .style("color", "white")
+
+  div
+      .selectAll('div')
+      .data(data)
+      // .join('div')
+      .enter().append('div')
+      .style('width', d => `${x(d)}px`)
+      .style('height', '30px')
+      .style('line-height', '30px')
+      .style('padding-right', '5px')
+      .style('box-sizing', 'border-box')
+      .style('background', 'steelblue')
+      .style('margin', '3px')
+      .text(d => d)
+
+  document.body.appendChild(div.node())
+</script>
+</body>
+</html>
