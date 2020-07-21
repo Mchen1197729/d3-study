@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lets Make A Bar Chart3-self</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const data = [4, 8, 15, 16, 23, 42]
+  const width = 420
+
+  const x = d3.scaleLinear()
+      .domain([0, d3.max(data)])
+      .range([0, width])
+
+  const y = d3.scaleBand()
+      .domain(d3.range(data.length))
+      .range([0, 30 * data.length])
+
+  const svg = d3.select('svg')
+      .attr('width', width)
+      .attr('height', y.range()[1])
+      .style('background', '#eee')
+      .attr('text-anchor', 'end')
+      .attr('font-size', '10px')
+
+  const bar = svg.selectAll('g')
+      .data(data)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(0,${y(i)})`)
+
+  bar.append('rect')
+      .attr('width', x)
+      .attr('height', y.bandwidth() - 1)
+      .attr('fill', 'tomato')
+
+
+  bar.append('text')
+      .attr('x', d => x(d) - 3)
+      .attr('y', y.bandwidth() / 2 + 3)
+      .attr('fill', '#fff')
+      .text(d => d)
+
+
+</script>
+</body>
+</html>

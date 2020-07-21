@@ -6,10 +6,37 @@
   <script src='https://d3js.org/d3.v5.min.js'></script>
 </head>
 <body>
+<svg></svg>
 <script>
+  /*
+  * 1.selection.node() --> 返回选择集中的第一个非空元素
+  * 2.selection.nodes() --> 返回选择集元素组成的数组(即使只有一个元素也会返回一个元素的数组)
+  * 3.selection.size() --> 返回选择集中的元素的个数
+  *
+  * 4.d3.create(tagName) --> 返回一个脱离当前文档的单元素的选择集
+  *   后续可以使用document.body.appendChild(selection)将该选择集对应的dom元素添加到body中
+  *
+  * */
   const data = [4, 8, 15, 16, 23, 42]
-  const div = d3.create('div') //返回值是一个选择集
-  console.log(div.node(),div.nodes(),div.size())
+
+  const svg = d3.select('svg')
+
+  // svg.append('g').append('circle').append('text')
+
+  const g = svg.append('g')
+
+  g.append('circle')
+  g.append('text')
+
+  console.log(svg, svg.node(), svg.nodes(), svg.size())
+
+  // const a = d3.create('a')
+  //     .attr('href', 'http://www.baidu.com')
+  //     .text('百度')
+  // console.log(a.node(), a.nodes(), a.size())
+  //
+  // document.body.appendChild(a.node())
+
 </script>
 </body>
 </html>

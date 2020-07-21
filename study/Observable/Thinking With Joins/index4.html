@@ -7,6 +7,11 @@
 </head>
 <body>
 <svg width="720" height="120" style="background:#eee">
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
+  <circle></circle>
 </svg>
 <hr>
 <div>
@@ -24,17 +29,22 @@
   const svg = d3.select('svg')
 
   function draw() {
-    const circleUpdate = svg.selectAll('circle').data(data)
-
-    const circleEnter = circleUpdate.enter().append('circle')
-
-    const circleExit = circleUpdate.exit().remove()
-        .transition()
-        .duration(1000)
-        .attr('r', 0)
-
-    circleEnter.merge(circleUpdate)
+    //update选择集表示现有的元素
+    const circleUpdate = svg.selectAll('circle')
+        .data(data)
         .attr('fill', 'steelblue')
+
+    //enter选择集表示最新进入的元素
+    //需要注意的是：enter选择集只是在一瞬间的事 因为过了那一瞬间之后 立刻就会变成update选择集
+    const circleEnter = circleUpdate
+        .enter().append('circle')
+        .attr('fill', 'tomato')
+
+    //exit选择集表示被移除出去的元素
+    const circleExit = circleUpdate.exit().remove()
+
+    circleEnter
+        .merge(circleUpdate)
         .attr('cx', d => Math.sqrt(d) + 2 * d)
         .attr('cy', 50)
         .attr('r', d => Math.sqrt(d) * 2)
@@ -46,6 +56,7 @@
   const btn2 = document.getElementById('subtract')
 
   btn1.addEventListener('click', () => {
+    data.push(Math.floor(Math.random() * 100))
     data.push(Math.floor(Math.random() * 100))
     draw()
   })

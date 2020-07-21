@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thinking With Joins⑦</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/d3/5.16.0/d3.js"></script>
+</head>
+<body>
+<svg width="720" height="120" style="background:#eee">
+</svg>
+<hr>
+<script>
+  function randomLetters() {
+    return d3.shuffle("abcdefghijklmnopqrstuvwxyz".split(""))
+        .slice(0, Math.floor(6 + Math.random() * 20)) // 产生一个长度6-26的字母数组
+        .sort()
+  }
+
+  const svg = d3.select('svg')
+
+  function draw() {
+    const data = randomLetters()
+    svg.selectAll('text')
+        .data(data, d => d)
+        .join(
+            enter => enter.append('text')
+                .attr('fill', 'steelblue')
+                .text(d => d),
+            update => update.attr('fill', 'deeppink')
+        )
+        .attr('x', (d, i) => i * 16)
+        .attr('y', 50)
+        .attr('font-size', 20)
+  }
+
+  draw()
+
+  setInterval(draw, 2500)
+
+
+</script>
+</body>
+</html>

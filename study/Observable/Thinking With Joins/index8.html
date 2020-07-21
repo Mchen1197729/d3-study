@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thinking With Joins⑧</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/d3/5.16.0/d3.js"></script>
+</head>
+<body>
+<svg width="720" height="120" style="background:#eee">
+</svg>
+<hr>
+<script>
+  function randomLetters() {
+    return d3.shuffle("abcdefghijklmnopqrstuvwxyz".split(""))
+        .slice(0, Math.floor(6 + Math.random() * 20)) // 产生一个长度6-26的字母数组
+        .sort()
+  }
+
+  const svg = d3.select('svg')
+
+  const t = svg.transition().duration(1500)
+
+  //为enter&update&exit提供不同的transition
+  function draw() {
+    const data = randomLetters()
+
+    svg.selectAll('text')
+        .data(data, d => d)
+        .join(
+            enter => enter.append('text')
+                .attr('fill', 'steelblue')
+                .attr('y', 50)
+                .attr('font-size', 20)
+                .text(d => d)
+                .call(en => en.transition(t)
+                    .attr('x', (d, i) => i * 18)),
+            update => update.attr('fill', 'deeppink')
+                .call(up => up.transition(t)
+                    .attr('x', (d, i) => i * 18)
+                    .attr('y', 50)),
+            exit => exit.call(ex => ex.transition(t)
+                .attr('y', 80).remove())
+        )
+  }
+
+  draw()
+
+  setInterval(draw, 2500)
+
+
+</script>
+</body>
+</html>

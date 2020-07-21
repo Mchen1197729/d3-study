@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thinking With Joins⑨</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/d3/5.16.0/d3.js"></script>
+</head>
+<body>
+<svg width="1020" height="520" style="background:#eee">
+</svg>
+<hr>
+<button id="stop">Stop</button>
+<script>
+  const margin = {top: 20, right: 20, bottom: 20, left: 20}
+
+  const getRandomData = () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    //console.log(d3.shuffle(arr).splice(0, 5 + Math.random() * 6))
+    return d3.shuffle(arr).slice(0, 5 + Math.random() * 6).sort((a, b) => a - b)
+  }
+
+  const svg = d3.select('svg')
+
+  function draw() {
+    const data = getRandomData()
+    console.log(data)
+
+    svg.selectAll('g').data(data, d => d)
+        .join(enter => {
+              const gEnter = enter.append('g')
+              gEnter.append('circle')
+                  .attr('fill', 'tomato')
+                  .attr('cx', (d, i) => i * 100 + 50)
+                  .attr('cy', 300)
+                  .attr('r', d => d + 20)
+              gEnter.append('text')
+                  .attr('x', (d, i) => i * 100 + 50)
+                  .attr('y', 300)
+                  .attr('fill', '#fff')
+                  .attr('font-size', 20)
+                  .attr('font-weight', 'bold')
+                  .text(d => d)
+            },
+            update => {
+              update.select('circle').attr('fill', 'steelblue')
+            },
+            exit => exit.remove()
+        )
+
+    /*
+    svg.selectAll('circle').data(data, d => d)
+        .join(enter => enter.append('circle')
+                .attr('fill', 'tomato'),
+            update => update.attr('fill', 'steelblue'))
+        .attr('cx', (d, i) => i * 100 + 50)
+        .attr('cy', 300)
+        .attr('r', d => d + 20)
+        */
+
+    // .attr('fill', 'steelblue')
+    /*
+    .append('text')
+    .attr('x', (d, i) => i * 100 + 50)
+    .attr('y', 300)
+    .attr('fill', '#fff')
+    .attr('font-size', 20)
+    .attr('font-weight', 'bold')
+    .text(d => d)
+     */
+  }
+
+  draw()
+  const intervalID = setInterval(draw, 2000)
+  document.getElementById('stop').addEventListener('click', () => {
+    clearInterval(intervalID)
+  })
+</script>
+</body>
+</html>

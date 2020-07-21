@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lets Make A Bar Chart3-self-horizontal</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  /*
+  * 纵向表示数量 横向表示类目
+  * */
+  const padding = {top: 20, right: 10, bottom: 10, left: 10}
+  const data = [4, 8, 15, 16, 23, 42, 2, 10, 5, 33, 20, 18, 50, 29, 40]
+  const height = 420, width = 820
+
+  const x = d3.scaleBand()
+      .domain(d3.range(data.length))
+      // .range([0, 30 * data.length])
+      .range([0, width - padding.left - padding.right])
+
+  const y = d3.scaleLinear()
+      .domain([0, d3.max(data)])
+      .range([0, height - padding.top - padding.bottom])
+
+  const svg = d3.select('svg')
+      .attr('width', x.range()[1])
+      .attr('height', height)
+      .style('background', '#eee')
+      .attr('font-size', '10px')
+      .attr('text-anchor', 'end')
+
+  const bar = svg.selectAll('g')
+      .data(data)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${x(i)},0)`)
+
+  bar.append('rect')
+      .attr('x', 0)
+      .attr('y', d => height - y(d))
+      .attr('width', x.bandwidth() - 1)
+      .attr('height', y)
+      .attr('fill', 'steelblue')
+
+  bar.append('text')
+      .attr('x', x.bandwidth() / 2)
+      .attr('y', d => height - y(d) + 13)
+      .attr('fill', '#fff')
+      .attr('dx', '0.35em')
+      .text(d => d)
+
+
+</script>
+</body>
+</html>

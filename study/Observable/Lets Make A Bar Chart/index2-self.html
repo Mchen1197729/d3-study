@@ -2,37 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lets Make A Bar Chart2</title>
+  <title>Lets Make A Bar Chart2-self</title>
   <script src='https://d3js.org/d3.v5.min.js'></script>
 </head>
 <body>
+<div id="container"></div>
 <script>
   const data = [4, 8, 15, 16, 23, 42]
 
+  //定义计算x长度的函数
   const x = d3.scaleLinear()
       .domain([0, d3.max(data)])
       .range([0, 520])
 
-  const div = d3
-      .create("div")
-      .style("font", "10px sans-serif")
-      .style("text-align", "right")
-      .style("color", "white")
-
-  div
+  const div = d3.select('#container')
       .selectAll('div')
       .data(data)
       .enter().append('div')
-      .style('width', d => `${x(d)}px`)
       .style('height', '30px')
+      .style('width', d => `${x(d)}px`)
+      .style('background', 'steelblue')
+      .style('text-align', 'right')
       .style('line-height', '30px')
       .style('padding-right', '5px')
-      .style('box-sizing', 'border-box')
-      .style('background', 'steelblue')
-      .style('margin', '3px')
+      .style('margin-bottom', '3px')
+      .style('color', '#fff')
+      .style('font-size', '12px')
       .text(d => d)
 
-  document.body.appendChild(div.node())
 </script>
 </body>
 </html>
