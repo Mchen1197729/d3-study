@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lets Make A Bar Chart3-self-horizontal</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  /*
+  * 纵向表示数量 横向表示类目
+  * */
+  const fruits = [
+    {name: "🍉", count: 1},
+    {name: "🍇", count: 13},
+    {name: "🍏", count: 8},
+    {name: "🍌", count: 5},
+    {name: "🍐", count: 3},
+    {name: "🍋", count: 2},
+    {name: "🍎", count: 1},
+    {name: "🍊", count: 21}
+  ]
+  const padding = {top: 20, right: 10, bottom: 10, left: 10}
+  const height = 420, width = 820
+
+  const x = d3.scaleBand()
+      .domain(fruits.map(d => d.name))
+      .range([0, width - padding.left - padding.right])
+
+  const y = d3.scaleLinear()
+      .domain([0, d3.max(fruits, d => d.count)])
+      .range([0, height - padding.top - padding.bottom])
+
+  const svg = d3.select('svg')
+      .attr('width', x.range()[1])
+      .attr('height', height)
+      .style('background', '#eee')
+      .attr('font-size', '10px')
+      .attr('text-anchor', 'end')
+
+  const bar = svg.selectAll('g')
+      .data(fruits)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${x(d.name)},0)`)
+
+  bar.append('rect')
+      .attr('x', 0)
+      .attr('y', d => height - y(d.count))
+      .attr('width', x.bandwidth() - 1)
+      .attr('height', d => y(d.count))
+      .attr('fill', 'steelblue')
+
+  bar.append('text')
+      .attr('x', x.bandwidth() / 2)
+      .attr('y', d => height - y(d.count) + 13)
+      .attr('fill', '#fff')
+      .attr('dx', '0.35em')
+      .text(d => d.count)
+
+
+</script>
+</body>
+</html>

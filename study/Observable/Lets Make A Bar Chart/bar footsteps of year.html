@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>一年平均每月的步数条形图</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const dataset = [
+    {month: '一月', footSteps: 7850},
+    {month: '二月', footSteps: 4500},
+    {month: '三月', footSteps: 5400},
+    {month: '四月', footSteps: 13600},
+    {month: '五月', footSteps: 10200},
+    {month: '六月', footSteps: 10000},
+    {month: '七月', footSteps: 8000},
+    {month: '八月', footSteps: 7800},
+    {month: '九月', footSteps: 7600},
+    {month: '十月', footSteps: 3900},
+    {month: '十一月', footSteps: 5800},
+    {month: '十二月', footSteps: 15800}
+  ]
+  const padding = {top: 50, right: 10, bottom: 10, left: 10}
+  const width = 920, height = 420
+
+  const date = d3.scaleLinear()
+      .range([new Date('2020-01-01 00:00:00'), new Date('2020-12-31 23:59:59')])
+
+  console.log(date(-0.5))
+
+  const color = d3.scaleLinear()
+      .domain([-1, 0, 1])
+      .range(['#000', '#ccc', '#fff'])
+
+  //continuous.range() continuous.domain() 返回当前设置的值的拷贝
+  console.log(color.domain(), color.range())
+
+  const x = d3.scaleBand()
+      .domain(dataset.map(d => d.month))
+      .rangeRound([0, width]) //避免过多的小数
+      /*
+      * 此处设置padding分成三种
+      * 1.paddingInner指每两个bandwidth中间有一个间隔 该间隔是band.step()的5%
+      * 2.paddingOuter指每个bandwidth之间没有间隔 只在开头和末尾处留有指定的间隔
+      * 3.padding 指每两个bandwidth之间都有间隔 开头和末尾也有指定的间隔
+      *   padding = paddingInner + paddingOuter
+      * 注意:paddingInner和paddingOuter可以同时使用
+      *
+      * 此处设置align() 接受一个0~1的数值
+      *   align(0) -->表示水平左对齐
+      *   align(0.5) -->表示水平居中对齐(默认的对齐方式)
+      *   align(1) -->表示水平右对齐
+      *
+      * */
+      .paddingInner(0.05)
+      .paddingOuter(0.2)
+      .align(0.5)
+
+  console.log((x.step() - x.bandwidth()) / x.step())
+
+  const y = d3.scaleLinear()
+      //scale.nice()防止计算出的值有过多的小数部分
+      .domain([0, d3.max(dataset, d => d.footSteps)]).nice()
+      .rangeRound([padding.bottom, height - padding.top])
+
+  const svg = d3.select('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '10px')
+      .style('background', '#eee')
+
+  const bar = svg.selectAll('g')
+      .data(dataset)
+      .enter().append('g')
+      .attr('transform', d => `translate(${x(d.month)},0)`)
+
+  bar.append('rect')
+      .attr('x', 0)
+      .attr('y', d => height - padding.bottom - y(d.footSteps))
+      .attr('width', x.bandwidth())
+      .attr('height', d => y(d.footSteps))
+      .attr('fill', 'steelblue')
+
+  bar.append('text')
+      .attr('x', x.bandwidth() / 2)
+      .attr('y', d => height - y(d.footSteps) + 10)
+      .attr('fill', '#fff')
+      .text(d => d.footSteps)
+
+
+</script>
+</body>
+</html>
