@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Bar Chart</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0-0/axios.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 920, height = 450
+  const margin = {top: 30, right: 20, bottom: 20, left: 35}
+
+  axios.get('./alphabet.csv')
+      .then(response => {
+        const dataset = d3.csvParse(response.data, d3.autoType)
+        console.log(dataset)
+
+        const x = d3.scaleBand()
+            .domain(dataset.map(d => d.letter))
+            .rangeRound([margin.left, width - margin.right])
+            .paddingInner(0.02)
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(dataset, d => d.frequency)])
+            .rangeRound([height - margin.bottom, margin.top]) //[大的值,小的值]
+
+        const svg = d3.select('svg')
+            .attr('viewBox', [0, 0, width, height])
+            .style('background', '#eee')
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', '10px')
+            .attr('text-anchor', 'middle')
+
+        const bar = svg.selectAll('g')
+            .data(dataset)
+            .enter().append('g')
+            .attr('transform', d => `translate(${x(d.letter)},0)`)
+
+        bar.append('rect')
+            .attr('x', 0)
+            .attr('y', d => y(d.frequency))
+            .attr('width', x.bandwidth())
+            .attr('height', d => y(0) - y(d.frequency))
+            .attr('fill', 'steelblue')
+
+        bar.append('text')
+            .attr('x', x.bandwidth() / 2)
+            .attr('y', d => y(d.frequency) + 10)
+            .attr('fill', '#eee')
+            .text(d => (d.frequency * 100).toFixed(0) + '%')
+
+        //添加X轴
+        svg.append('g')
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0))
+
+        //添加Y轴
+        svg.append('g')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).tickFormat(l => l * 100 + '%'))
+
+      })
+</script>
+</body>
+</html>

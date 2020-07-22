@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-fetch①</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<script>
+  //直接解析服务器上的csv文件
+  d3.csv('http://localhost:5400/alphabet.csv')
+      .then(data => {
+        console.log(data)
+      })
+
+  d3.json('http://localhost:5400/stu.json')
+      .then(stu => {
+        console.log(stu)
+      })
+
+  d3.text('http://localhost:5400/hello.txt')
+      .then(content => {
+        console.log(content)
+      })
+
+  d3.image('http://localhost:5400/github.jpg')
+      .then(img => {
+        console.log(img)
+      })
+</script>
+</body>
+</html>
