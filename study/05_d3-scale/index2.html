@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-scale2 d3.scaleTime()</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  const date = d3.scaleTime()
+      .domain([new Date(1994, 5, 5), new Date(2020, 5, 4)])
+      .range([0, 500])
+
+  const dateFormat30 = date.tickFormat(30, '%Y-%m-%d %H:%M:%S')
+
+  console.log(date.ticks(30).map(dateFormat30))
+</script>
+</body>
+</html>

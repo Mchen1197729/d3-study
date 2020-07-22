@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-scale1</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  const date = d3.scaleLinear()
+      .range([new Date('2020-01-01 00:00:00'), new Date('2020-12-31 23:59:59')])
+
+  console.log(date(-0.5))
+
+  const color = d3.scaleLinear()
+      .domain([-1, 0, 1])
+      .range(['#000', '#ccc', '#fff'])
+
+  //continuous.range() continuous.domain() 返回当前设置的值的拷贝
+  console.log(color.domain(), color.range())
+
+  const ticks1 = d3.scaleLinear().ticks()
+  console.log(ticks1)
+
+  /*
+  * 1.scale.ticks()如果不传入任何参数 那么默认将返回一个长度为11的数组(内部会自动计算)
+  * 2.如果传入一个指定的参数 那么d3将按照该参数作为最终数组的长度来进行计算
+  *   但是d3会保证最终返回的数组的两个相邻元素的间隔是1,2,5,10的倍数
+  * 3.scale.tickFormat()返回的是一个函数
+  * */
+  const ticks2 = d3.scaleLinear().domain([-100, 100]).ticks(50)
+  console.log(ticks2)
+
+  const unitScale = d3.scaleLinear().domain([0, 1])
+  const format10 = unitScale.tickFormat(10, '%')
+  const format100 = unitScale.tickFormat(100, '%')
+  console.log(unitScale.ticks(10).map(format10))
+  console.log(unitScale.ticks(100).map(format100))
+</script>
+</body>
+</html>

@@ -2,17 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>d3-axis</title>
+  <title>d3-axis①</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
+<svg></svg>
 <script>
-  d3.select("body").append("svg")
-      .attr("width", 1440)
-      .attr("height", 30)
-      .append("g")
-      .attr("transform", "translate(0,30)")
-      .call(d3.axisLeft(1))
+  /*
+  * 纵向:
+  * 1.d3.axisLeft(scale) -->生成一个刻度在左边的坐标轴 其中scale是d3.scaleXxx()的返回值
+  * 2.d3.axisRight(scale) -->生成一个刻度在右边的坐标轴 其中scale是d3.scaleXxx()的返回值
+  * 横向:
+  * 3.d3.axisTop(scale) -->生成一个刻度在上边的坐标轴 其中scale是d3.scaleXxx()的返回值
+  * 4.d3.axisBottom(scale) -->生成一个刻度在下边的坐标轴 其中scale是d3.scaleXxx()的返回值
+  * 5.d3.axisXxx(scale) -->返回一个axis函数实例
+  * 6.axis.tickSizeOuter(number) -->设置该坐标轴两端的刻度线的长度 默认是6
+  * 7.axis.tickSizeInner(number) -->设置该坐标轴中间的(除两端以外的)刻度线的长度 默认是6
+  *   axis.tickSize()就是tickSizeOuter()&tickSizeInner()的简写形式
+  * 8.axis.tickPadding(number) -->设置坐标轴刻度与描述文字之间的间隙 默认是3px
+  * 9.axis.ticks(count) -->设置该坐标轴上的刻度个数 一般会渲染出比count多一个的刻度
+  * 10.axis.ticks(count,specifier) -->接受第二个参数 用来确定label的格式化
+  * 11.可以使用axis.tickFormat()来自定义label的格式化
+  * */
+  const dataset = [
+    {month: '一月', footSteps: 7850},
+    {month: '二月', footSteps: 4500},
+    {month: '三月', footSteps: 5400},
+    {month: '四月', footSteps: 13600},
+    {month: '五月', footSteps: 10200},
+    {month: '六月', footSteps: 10000},
+    {month: '七月', footSteps: 8000},
+    {month: '八月', footSteps: 7800},
+    {month: '九月', footSteps: 7600},
+    {month: '十月', footSteps: 3900},
+    {month: '十一月', footSteps: 5800},
+    {month: '十二月', footSteps: 15800}
+  ]
+
+  const width = 720, height = 420
+  const margin = {top: 30, right: 15, bottom: 20, left: 45}
+
+  const x = d3.scaleBand()
+      .domain(dataset.map(d => d.month))
+      .rangeRound([margin.left, width - margin.right]) //[左边的横坐标,右边的横坐标]
+      .padding(0.03)
+
+
+  const y = d3.scaleLinear()
+      .domain([0, d3.max(dataset, d => d.footSteps)])
+      .rangeRound([height - margin.bottom, margin.top]) //[下边的纵坐标,上边的纵坐标]
+      .nice()
+
+  //console.log(dataset.map(d => y(d.footSteps)))
+  console.log(y(0)) //y(0)就是height-margin.bottom
+
+  const svg = d3.select('svg')
+      .style('background', '#eee')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '12px')
+      .attr('font-family', 'sans-serif')
+
+  const bar = svg.selectAll('g')
+      .data(dataset)
+      .enter().append('g')
+      .attr('transform', d => `translate(${x(d.month)},0)`)
+
+  bar.append('rect')
+      .attr('x', 0)
+      .attr('y', d => y(d.footSteps))
+      .attr('width', x.bandwidth())
+      .attr('height', d => y(0) - y(d.footSteps))
+      .attr('fill', 'steelblue')
+
+  bar.append('text')
+      .attr('x', x.bandwidth() / 2)
+      .attr('y', d => y(d.footSteps) + 15)
+      .attr('fill', '#fff')
+      .text(d => d.footSteps)
+
+  //添加X轴
+  svg.append('g')
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickSizeOuter(0))
+
+  //添加Y轴
+  svg.append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(15).tickFormat(l => `${(l / 1000)}k`))
+
 </script>
 </body>
 </html>

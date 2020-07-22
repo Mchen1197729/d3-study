@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-scale3</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  const sequential1 = d3.scaleSequential(t => `hello ${t}`)
+  console.log(sequential1(0.5), sequential1(1.5))
+
+  const sequential2 = d3.scaleSequential(t => `Hi ${t}`)
+      .domain([100, 200])
+  console.log(sequential2(0.5), sequential2(100), sequential2(200))
+
+  const angryRainbow = d3.scaleSequential(t => d3.hsl(t * 360, 1, 0.5).toString())
+  console.log(angryRainbow(0))
+
+  const sinebow = d3.scaleSequential(d3.interpolateSinebow)
+  console.log(sinebow(0))
+
+  const rainbow = d3.scaleSequential(d3.interpolateRainbow)
+  console.log(rainbow(0))
+
+  console.dir(d3.scaleSequential(t => 10 - t * 2.5))
+</script>
+</body>
+</html>

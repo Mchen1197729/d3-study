@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-axis②</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const margin = {top: 20, right: 20, bottom: 30, left: 35}
+  const width = 300, height = 300
+
+  const x = d3.scaleLinear()
+      .domain([0, 1])
+      .range([margin.left, width - margin.right])
+
+  const y = d3.scaleLinear()
+      .domain([0, 1])
+      .range([height - margin.bottom, margin.top])
+
+  const svg = d3.select('svg')
+      // .attr('width', width)
+      // .attr('height', height)
+      .attr("viewBox", [0, 0, width, height])
+      .style('background', '#eee')
+
+  svg.append('g')
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickSizeOuter(0).ticks(10, '+f'))
+      .call(g => g.selectAll('.tick:not(:first-of-type)')
+          .append('line')
+          .attr('y2', -height + margin.bottom + margin.top)
+          .attr('stroke', 'currentColor')
+          .attr('stroke-dasharray', [5, 2])
+      )
+
+  svg.append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).tickSizeOuter(0).tickFormat(l => `${l * 100}%`))
+      .call(g => g.selectAll('.tick:not(:first-of-type)')
+          .append('line')
+          .attr('x2', width - margin.left - margin.right)
+          .attr('stroke', 'currentColor')
+          .attr('stroke-dasharray', [2, 5])
+      )
+
+</script>
+</body>
+</html>

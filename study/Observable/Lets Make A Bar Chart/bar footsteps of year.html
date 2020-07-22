@@ -25,18 +25,6 @@
   const padding = {top: 50, right: 10, bottom: 10, left: 10}
   const width = 920, height = 420
 
-  const date = d3.scaleLinear()
-      .range([new Date('2020-01-01 00:00:00'), new Date('2020-12-31 23:59:59')])
-
-  console.log(date(-0.5))
-
-  const color = d3.scaleLinear()
-      .domain([-1, 0, 1])
-      .range(['#000', '#ccc', '#fff'])
-
-  //continuous.range() continuous.domain() 返回当前设置的值的拷贝
-  console.log(color.domain(), color.range())
-
   const x = d3.scaleBand()
       .domain(dataset.map(d => d.month))
       .rangeRound([0, width]) //避免过多的小数

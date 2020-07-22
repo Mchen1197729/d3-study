@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-dsv①</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * d3提供了解析逗号分隔符&tab分隔符文本的功能
+  * 1.d3.csvParse(逗号分隔符字符串)
+  * 2.d3.dsvParse(tab分隔符字符串,rowParser)
+  *    可以指定roeParse函数用来自定义返回的数据格式
+  *     该函数接受三个参数 d,i,columns
+  *     d:当前的元素
+  *     i:当前的下标
+  *     columns:是一个数组 是该文件
+  *
+  * 3.将数据格式化为逗号分隔符 d3.csvFormat(data)  //data必须是数组形式
+  * 4.将数据格式化改为tab分隔符 d3.tsvFormat(data) //data必须是数组形式
+  *
+  * 5.d3.dsvFormat(divider) 使用自定义的分隔符来解析字符串 返回一个对象
+  * */
+  const data1 = d3.csvParse('name,age,married\n周杰伦,45,true\n林志玲,40,false', (d, i, columns) => {
+    console.log(columns)
+    return {...d, age: Number(d.age), married: Boolean(d.married)}
+  })
+  const data2 = d3.tsvParse('name\tage\tmarried\n刘德华\t55\ttrue')
+  console.log(data1, data2.columns)
+
+  const csv = d3.csvFormat([{name: '林志玲', age: 49}, {name: 'Rose', age: 18}])
+  const tsv = d3.tsvFormat([{name: 'Jack', age: 20}, {name: 'Rose', age: 18}])
+  console.log(tsv)
+  console.log(csv)
+
+  const arr = [1, 2, 3]
+  arr['str'] = 'hello'
+  console.log(arr)
+
+  const customDivider = d3.dsvFormat('|')
+  console.log(customDivider.parse('name|age\nJack|22\nRose|17'))
+
+  console.log(d3.csvParseRows('name,age,married\n周杰伦,45,true\n林志玲,40,false'))
+  console.log('******************缺省值&重复值******************')
+  const text = `a,b,c,d,e,f
+1,2,3,,5,6
+7,8,,,11,12`
+  console.log(d3.csvParse(text))
+  console.log(d3.csvParse(text, d3.autoType))
+</script>
+</body>
+</html>
