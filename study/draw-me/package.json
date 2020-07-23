@@ -1,0 +1,14 @@
+{
+  "name": "@d3/draw-me",
+  "main": "c36363a3d71a4530@134.js",
+  "version": "134.0.0",
+  "homepage": "https://observablehq.com/@d3/draw-me",
+  "author": {
+    "name": "D3",
+    "url": "https://observablehq.com/@d3"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}

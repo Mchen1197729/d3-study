@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-time-format</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * d3-time-format：将时间&日期转化成人类友好的字符串形式
+  * 1.将日期时间格式化为字符串：
+  *   d3.timeFormat(rule)(Date对象) -->返回人类友好的字符串格式
+  *
+  * 2.将字符串解析为日期时间对象
+  *   d3.timeParse(rule)(字符串) -->返会的就是Date对象
+  *
+  * */
+  const format = d3.timeFormat('%Y-%m-%d')
+  console.log(format(new Date()))
+
+  const parser = d3.timeParse('%Y-%m-%d')
+  console.log(parser('1994-05-04')) //就是js中的Date实例
+
+  console.log(new Date())
+</script>
+</body>
+</html>

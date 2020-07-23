@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-interpolate</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * d3-interpolate模块提供了在两个值之间多种插值方法
+  * 可以是两个数值 两个颜色值 日期值 时间值
+  *
+  * d3.quantize(interpolator, n)
+  *   -->根据指定的interpolator返回n个等间隔的均匀采样,其中n是一个大于1的整数
+  *
+  * */
+  const i = d3.interpolateNumber(10, 20)
+  console.log(i(0.3))
+  console.log(i(0.5))
+  console.log(i(0.9))
+
+  const c = d3.interpolateLab('steelblue', 'tomato')
+  console.log(c(0))
+  console.log(c(1))
+  console.log(c(0.5))
+
+  const cc = d3.interpolate({colors: ["red", "blue"]}, {colors: ["white", "black"]})
+</script>
+</body>
+</html>

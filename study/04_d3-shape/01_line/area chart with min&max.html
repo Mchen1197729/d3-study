@@ -37,7 +37,7 @@
             .curve(d3.curveStep)
             .x(d => x(d.date))
             .y0(d => y(d.low)) //底部的纵坐标
-            .y1(d => y(d.high))(data)
+            .y1(d => y(d.high))(data) //这里一定要调用生成器函数才能得到d属性的字符串
 
         svg.append('path')
             .attr('stroke', 'steelblue')
