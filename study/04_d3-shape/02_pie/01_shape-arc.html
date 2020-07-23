@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-shape:arc</title>
+  <script src='../../lib/d3.v5.js'></script>
+</head>
+<body>
+<svg id="svg">
+</svg>
+<script>
+  /*
+  * 1.d3.arc() -> 返回一个arc生成器(一个函数)
+  * */
+  const width = 500, height = 300
+  const arc = d3.arc()
+      .innerRadius(90) //扇形的内径
+      .outerRadius(100) //扇形的外径
+      .cornerRadius(5) //拐角半径
+      .startAngle(-Math.PI) //扇形的起始角度
+      .endAngle(Math.PI) //扇形的终止角度
+
+  console.log(arc())
+  const svg = d3.select('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .style('background', '#eee')
+
+  svg.append('path')
+      .attr('transform', `translate(${width / 2},${height / 2})`)
+      .attr('d', arc())
+      .attr('fill', 'steelblue')
+</script>
+</body>
+</html>

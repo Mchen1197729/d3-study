@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-shape-line②</title>
+  <script src="../../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 720, height = 300
+  const margin = {top: 20, right: 30, bottom: 30, left: 30}
+
+  const data = []
+  //v的取值范围就是[0,4] 可以取到边界值
+  for (let i = 0, v = 2; i < 50; ++i) {
+    v += Math.random() - 0.5
+    v = Math.max(Math.min(v, 4), 0)
+    data.push({step: i, value: v})
+  }
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const x = d3.scaleLinear()
+      .domain([0, 49])
+      .range([margin.left, width - margin.right])
+
+  const y = d3.scaleLinear()
+      .domain([0, 4])
+      .range([height - margin.bottom, margin.top])
+
+  const line = d3.line()
+      .x(d => x(d.step))
+      .y(d => y(d.value))
+
+  console.log(line(data))
+
+  svg.append('path')
+      //.attr('transform', `translate(${width / 2},${height / 2})`)
+      .attr('fill', 'none')
+      .attr('stroke', 'steelblue')
+      .attr('stroke-width', '1.5')
+      .attr('d', line(data))
+
+  //添加X轴
+  svg.append('g')
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x))
+
+  //添加Y轴
+  svg.append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y))
+</script>
+</body>
+</html>

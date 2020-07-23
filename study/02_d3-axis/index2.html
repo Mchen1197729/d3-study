@@ -37,7 +37,7 @@
 
   svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickSizeOuter(0).tickFormat(l => `${l * 100}%`))
+      .call(d3.axisLeft(y).tickSizeOuter(0).tickFormat(d3.format('.0%')))
       .call(g => g.selectAll('.tick:not(:first-of-type)')
           .append('line')
           .attr('x2', width - margin.left - margin.right)

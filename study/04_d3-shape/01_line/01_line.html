@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-shape-line①</title>
+  <script src="../../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 500, height = 300
+
+  const data = [[10, 60], [40, 90], [60, 10], [190, 10]]
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const line = d3.line()(data)
+
+  console.log(line)
+
+  svg.append('path')
+      //.attr('transform', `translate(${width / 2},${height / 2})`)
+      .attr('fill', 'none')
+      .attr('stroke', 'steelblue')
+      .attr('d', line)
+
+</script>
+</body>
+</html>

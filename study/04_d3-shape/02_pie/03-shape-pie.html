@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-shape-pie</title>
+  <script src="../../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 500, height = 300
+
+  const data = [
+    {"number": 4, "name": "Locke"},
+    {"number": 8, "name": "Reyes"},
+    {"number": 15, "name": "Ford"},
+    {"number": 16, "name": "Jarrah"},
+    {"number": 23, "name": "Shephard"},
+    {"number": 42, "name": "Kwon"}
+  ]
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  //d3.pie().value(d=>d.number)(data) 指定以d.number来计算所占的比例
+  const pie = d3.pie().value(d => d.number)(data)
+
+  console.log(pie)
+
+
+  svg.append('g')
+      .attr('stroke', '#fff')
+      .selectAll('path')
+      .data(pie)
+      .enter().append('path')
+      .attr('transform', `translate(${width / 2},${height / 2})`)
+      .attr('fill', 'steelblue')
+      .attr('d', d => d3.arc()
+          .innerRadius(0)
+          .outerRadius(120)
+          .startAngle(d.startAngle)
+          .endAngle(d.endAngle)()
+      )
+
+</script>
+</body>
+</html>

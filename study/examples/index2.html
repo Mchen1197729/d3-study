@@ -9,7 +9,9 @@
 <body>
 <svg></svg>
 <script>
+  //width&height表示svg的viewBox的范围
   const width = 920, height = 450
+  //margin配置表示图形在svg中的位置信息
   const margin = {top: 30, right: 20, bottom: 20, left: 35}
 
   axios.get('./alphabet.csv')
@@ -17,15 +19,18 @@
         const dataset = d3.csvParse(response.data, d3.autoType)
         console.log(dataset)
 
+        //x的映射关系
         const x = d3.scaleBand()
             .domain(dataset.map(d => d.letter))
             .rangeRound([margin.left, width - margin.right])
             .paddingInner(0.02)
 
+        //y的映射关系
         const y = d3.scaleLinear()
             .domain([0, d3.max(dataset, d => d.frequency)])
             .rangeRound([height - margin.bottom, margin.top]) //[大的值,小的值]
 
+        //配置svg的属性
         const svg = d3.select('svg')
             .attr('viewBox', [0, 0, width, height])
             .style('background', '#eee')
@@ -33,11 +38,13 @@
             .attr('font-size', '10px')
             .attr('text-anchor', 'middle')
 
+        //一个bar就是一个容器 该容器进行transform变换 这样容器中的元素就是以该容器的左上角作为origin了
         const bar = svg.selectAll('g')
             .data(dataset)
             .enter().append('g')
             .attr('transform', d => `translate(${x(d.letter)},0)`)
 
+        //向容器中添加rect标签
         bar.append('rect')
             .attr('x', 0)
             .attr('y', d => y(d.frequency))
@@ -45,21 +52,23 @@
             .attr('height', d => y(0) - y(d.frequency))
             .attr('fill', 'steelblue')
 
+        //向容器中添加text标签
         bar.append('text')
             .attr('x', x.bandwidth() / 2)
             .attr('y', d => y(d.frequency) + 10)
             .attr('fill', '#eee')
-            .text(d => (d.frequency * 100).toFixed(0) + '%')
+            .text(d => (d.frequency* 100).toFixed(3)  + '%')
+            .attr('font-size', '6px')
 
-        //添加X轴
+        //添加X轴：横轴
         svg.append('g')
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickSizeOuter(0))
 
-        //添加Y轴
+        //添加Y轴：纵轴
         svg.append('g')
             .attr('transform', `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).tickFormat(l => l * 100 + '%'))
+            .call(d3.axisLeft(y).tickSizeOuter(0).tickFormat(l => (l * 100).toFixed(0) + '%'))
 
       })
 </script>

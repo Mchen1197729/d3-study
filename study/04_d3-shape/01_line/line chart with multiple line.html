@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Area Chart With Min&Max</title>
+  <script src="../../lib/d3.v5.js"></script>
+  <script src="../../lib/axios.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 720, height = 300
+  const margin = {top: 20, right: 30, bottom: 30, left: 30}
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  axios.get('./data.tsv')
+      .then(response => {
+        const data = d3.tsvParse(response.data, ({date, low, high}) => ({
+          date: d3.timeParse('%Y%m%d')(date), low, high
+        }))
+        console.log(data)
+
+        const x = d3.scaleTime()
+            .domain(d3.extent(data, d => d.date))
+            .rangeRound([margin.left, width - margin.right])
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.high)]).nice(5)
+            .rangeRound([height - margin.bottom, margin.top])
+
+        const line_low = d3.line()
+            .curve(d3.curveBasis)
+            .x(d => x(d.date))
+            .y(d => y(d.low))(data)
+
+        const line_high = d3.line()
+            .curve(d3.curveBasis)
+            .x(d => x(d.date))
+            .y(d => y(d.high))(data)
+
+        svg.append('path')
+            .attr('stroke', 'steelblue')
+            .attr('fill', 'none')
+            .attr('d', line_low)
+
+        svg.append('path')
+            .attr('stroke', 'tomato')
+            .attr('fill', 'none')
+            .attr('d', line_high)
+
+        //添加X轴
+        svg.append('g')
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+
+        //添加Y轴
+        svg.append('g')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select('.domain').remove())
+      })
+</script>
+</body>
+</html>

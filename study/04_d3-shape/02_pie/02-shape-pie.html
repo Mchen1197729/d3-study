@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-shape-pie</title>
+  <script src="../../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 500, height = 300
+
+  const data = [2, 2, 1, 7, 13, 19, 1, 9]
+
+  const svg = d3.select('svg')
+      // .attr('width', width)
+      // .attr('height', height)
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  //d3.pie().value(d=>d)(data) === d3.pie()(data)
+  const arcs = d3.pie().value(d => d)(data) //d3.pie().value(d=>d) 这是默认的 可以不写value函数
+  console.log(arcs)
+
+  svg.selectAll('path')
+      .data(arcs)
+      .enter().append('path')
+      .attr('d', d => d3.arc()
+          .innerRadius(0)
+          .outerRadius(80)
+          .startAngle(d.startAngle)
+          .endAngle(d.endAngle)())
+      .attr('fill', 'steelblue')
+      .attr('transform', `translate(${width / 2},${height / 2})`)
+</script>
+</body>
+</html>

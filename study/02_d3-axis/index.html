@@ -16,13 +16,18 @@
   * 3.d3.axisTop(scale) -->生成一个刻度在上边的坐标轴 其中scale是d3.scaleXxx()的返回值
   * 4.d3.axisBottom(scale) -->生成一个刻度在下边的坐标轴 其中scale是d3.scaleXxx()的返回值
   * 5.d3.axisXxx(scale) -->返回一个axis函数实例
+  *
   * 6.axis.tickSizeOuter(number) -->设置该坐标轴两端的刻度线的长度 默认是6
   * 7.axis.tickSizeInner(number) -->设置该坐标轴中间的(除两端以外的)刻度线的长度 默认是6
   *   axis.tickSize()就是tickSizeOuter()&tickSizeInner()的简写形式
+  *
   * 8.axis.tickPadding(number) -->设置坐标轴刻度与描述文字之间的间隙 默认是3px
+  *
   * 9.axis.ticks(count) -->设置该坐标轴上的刻度个数 一般会渲染出比count多一个的刻度
+  *
   * 10.axis.ticks(count,specifier) -->接受第二个参数 用来确定label的格式化
   * 11.可以使用axis.tickFormat()来自定义label的格式化
+  *
   * */
   const dataset = [
     {month: '一月', footSteps: 7850},

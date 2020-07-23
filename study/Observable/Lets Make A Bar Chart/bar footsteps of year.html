@@ -76,7 +76,7 @@
       .attr('x', x.bandwidth() / 2)
       .attr('y', d => height - y(d.footSteps) + 10)
       .attr('fill', '#fff')
-      .text(d => d.footSteps)
+      .text(d => d3.format('~s')(d.footSteps))
 
 
 </script>

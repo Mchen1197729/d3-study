@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-format</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * d3-format是用来将数值进行格式化的工具集
+  * d3.format(rule) -->返回一个函数
+  * d3.format(rule)(number) -->返回一个格式化后的字符串形式的数值
+  * */
+
+  for (let i = 0; i < 10; i++) {
+    console.log(i * 0.1)
+  }
+
+  const f1 = d3.format('.1f')
+
+  for (let i = 0; i < 10; i++) {
+    console.log(f1(i * 0.1)) //返回的是字符串类型的值
+  }
+
+  //将数字转换成百分数 并且保留2位小数
+  console.log(d3.format('.2%')(0.1213))
+
+  console.log(d3.format('($.2f')(-99.9))
+
+  console.log(d3.format('~s')(3500))
+
+</script>
+</body>
+</html>

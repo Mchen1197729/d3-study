@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Area Chart With Empty Data</title>
+  <script src="../../lib/d3.v5.js"></script>
+  <script src="../../lib/axios.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 720, height = 300
+  const margin = {top: 20, right: 30, bottom: 30, left: 30}
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  axios.get('./apple.csv')
+      .then(response => {
+        const data = d3.csvParse(response.data, d3.autoType)
+        console.log(data)
+
+        const x = d3.scaleUtc()
+            .domain(d3.extent(data, d => d.date))
+            .rangeRound([margin.left, width - margin.right])
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.close)]).nice()
+            .rangeRound([height - margin.bottom, margin.top])
+
+        const area1 = d3.area()
+            .curve(d3.curveBasis)
+            //定义如何过滤一些值 返回值是true才会被画在svg上
+            .defined(d => d.date.getMonth() > 2)
+            .x(d => x(d.date))
+            .y0(y(0)) //底部的纵坐标
+            .y1(d => y(d.close))(data)
+
+        const area2 = d3.area()
+            .curve(d3.curveBasis)
+            .x(d => x(d.date))
+            .y0(y(0)) //底部的纵坐标
+            .y1(d => y(d.close))(data)
+
+        svg.append('path')
+            .attr('d', area2)
+            .attr('stroke', 'none')
+            .attr('fill', '#fff')
+
+        svg.append('path')
+            .attr('d', area1)
+            .attr('stroke', 'steelblue')
+            .attr('fill', 'steelblue')
+
+        //添加X轴
+        svg.append('g')
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+
+        //添加Y轴
+        svg.append('g')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select('.domain').remove())
+      })
+</script>
+</body>
+</html>

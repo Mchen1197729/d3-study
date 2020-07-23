@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Line Chart</title>
+  <script src="../../lib/d3.v5.js"></script>
+  <script src="../../lib/axios.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 720, height = 300
+  const margin = {top: 20, right: 30, bottom: 30, left: 30}
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  axios.get('./alphabet.csv')
+      .then(response => {
+        const data = d3.csvParse(response.data, d3.autoType)
+        console.log(data)
+
+        //定义x的映射关系
+        const x = d3.scaleBand()
+            .domain(data.map(d => d.letter))
+            .rangeRound([margin.left, width - margin.right])
+
+        //定义y的映射关系
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.frequency)]).nice()
+            .rangeRound([height - margin.bottom, margin.top])
+
+        //定义line生成器
+        const line = d3.line()
+            .curve(d3.curveBasis) //设置曲线样式
+            .x(d => x(d.letter) + x.bandwidth() / 2)
+            .y(d => y(d.frequency))(data)
+
+        svg.append('path')
+            .attr('fill', 'none')
+            .attr('stroke', 'tomato')
+            .attr('stroke-width', '1.5')
+            .attr('d', line)
+
+        //添加X轴
+        svg.append('g')
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0))
+
+        //添加Y轴
+        svg.append('g')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).tickFormat(d3.format('.0%')))
+
+      })
+</script>
+</body>
+</html>
