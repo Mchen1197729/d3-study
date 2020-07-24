@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-interpolate②</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  console.log(10 * Math.random() | 0)
+  console.log(8.99999990000022 | 0)
+
+  //创建一个二维数组 数组的每个元素都是[x,y] ->当做一个点的坐标
+  const data1 = Array.from({length: 90}, (a, b) => [b * 10, (90 * Math.random()) | 0])
+  // console.log(data1)
+  const data2 = Array.from({length: 90}, (a, b) => [b * 10, (200 - 90 * Math.random() | 0)])
+
+  const line1 = d3.line()(data1)
+  const line2 = d3.line()(data2)
+
+  console.log(d3.line()(data1))
+  console.log(d3.line()(data2))
+
+  const interpolator = d3.interpolateString(line1, line2)
+
+  console.log(interpolator(0.5))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [-10, -10, 910, 210])
+      .attr('fill', 'none')
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-linejoin', 'round')
+      .style('background', '#eee')
+
+  svg.append('path')
+      .attr('fill', 'none')
+      .attr('stroke', 'steelblue')
+      .attr('d', interpolator(0))
+
+  svg.append('path')
+      .attr('fill', 'none')
+      .attr('stroke', 'tomato')
+      .attr('d', interpolator(1))
+
+  svg.append('path')
+      .attr('fill', 'none')
+      .attr('stroke', 'deeppink')
+      .attr('d', interpolator(.5))
+
+
+</script>
+</body>
+</html>

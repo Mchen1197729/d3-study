@@ -10,10 +10,10 @@
 <script>
   const width = 500, height = 300
 
-  const data = [[10, 60], [40, 90], [60, 10], [190, 10]]
+  const data = [[0, 0], [10, 60], [40, 90], [60, 10], [500, 300]]
 
   const svg = d3.select('svg')
-      .attr('viewBox', [0, 0, width, height])
+      .attr('viewBox', [-10, -10, width + 20, height + 20])
       .style('background', '#eee')
 
   const line = d3.line()(data)
@@ -21,7 +21,6 @@
   console.log(line)
 
   svg.append('path')
-      //.attr('transform', `translate(${width / 2},${height / 2})`)
       .attr('fill', 'none')
       .attr('stroke', 'steelblue')
       .attr('d', line)

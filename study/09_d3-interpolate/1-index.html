@@ -26,6 +26,22 @@
   console.log(c(0.5))
 
   const cc = d3.interpolate({colors: ["red", "blue"]}, {colors: ["white", "black"]})
+
+  const ccc = d3.interpolate([0, 0, 0], [255, 255, 255])
+  console.log(ccc(0))
+  console.log(ccc(0.5))
+  console.log(ccc(1))
+  console.log(ccc(0.8))
+  console.log(ccc(0.9))
+  console.log(ccc(0.9))
+
+  const trans = d3.interpolate('translate(0,0) rotate(0deg)', 'translate(90,0) rotate(90deg)')
+  console.log(trans(0))
+  console.log(trans(0.5))
+  console.log(trans(0.6))
+  console.log(trans(0.8))
+  console.log(trans(0.9))
+  console.log(trans(1))
 </script>
 </body>
 </html>
