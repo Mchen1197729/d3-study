@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-interpolate⑦</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  /*
+  * d3.piecewise(d3.interpolateXxx,array) -->返回一个插值器函数
+  * */
+  const wiseInterpolator = d3.piecewise(d3.interpolate, [
+    {opacity: 0.1, r: 1, cx: 0, cy: 0, fill: 'red'},
+    {opacity: 0.4, r: 10, cx: 10, cy: 20, fill: 'orange'},
+    {opacity: 0.8, r: 100, cx: 30, cy: 40, fill: 'yellow'},
+    {opacity: 1, r: 200, cx: 60, cy: 80, fill: 'lime'}
+  ])
+
+  const circle = wiseInterpolator(0.1)
+  const {opacity, r, cx, cy, fill} = circle
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [-20, -20, 120, 120])
+      .style('background', '#eee')
+      .append('circle')
+      .attr('opacity', opacity)
+      .attr('cx', r)
+      .attr('cy', cx)
+      .attr('r', cy)
+      .attr('fill', fill)
+
+</script>
+</body>
+</html>

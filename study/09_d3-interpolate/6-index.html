@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-interpolate⑥</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  /*
+  * d3.quantize(interpolator,length) 返回一个长度为length的数组
+  * 注意：d3.quantize(interpolator,length) 中如果interpolator是返回no defensive copy的值的话 那么不会起作用
+  * 应该写成这样 d3.quantize(t=>COPY(interpolate(t)),length)
+  * */
+  const qz = d3.quantize(d3.interpolate(0, 100), 11)
+  console.log(qz)
+
+</script>
+</body>
+</html>

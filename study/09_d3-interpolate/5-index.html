@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-interpolate⑤</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * 插值器没有使用防御式拷贝的只有三个 (处于性能考虑)
+  * d3.interpolateArray() d3.interpolateObject() d3.interpolateDate()
+  *
+  * */
+
+  //1.d3.interpolate(数值,数值)--> 插值器返回的值就是一个值 多个值不会共享内存地址
+  const number = d3.interpolateNumber(0, 100)
+  const i1 = number(0)
+  const i2 = number(1)
+  console.log({i1, i2})
+
+  //2.d3.interpolate('字符串','字符串')--> 插值器返回的值就是一个值 多个值不会共享内存地址
+  const string = d3.interpolate('z0', 'z100')
+  const s1 = string(0)
+  const s2 = string(1)
+  console.log({s1, s2})
+
+  //3.d3.interpolateArray(array1,array2)--> 插值器返回的值其实是一个变量 该变量指向一个内存地址
+  // 但是该内存地址的值是动态计算的 所以后续返回的插值会影响到之前的插值
+  const array = d3.interpolateArray([0, 0], [100, 100])
+  const a0 = array(0)
+  const a1 = array(1)
+  console.log(a0, a1) //[100,100] [100,100]
+
+  const a00 = Array.from(array(0)) //该值是一份拷贝 后续的插值不会影响到之前的插值
+  const a11 = Array.from(array(1)) //该值是一份拷贝 后续的插值不会影响到之前的插值
+  console.log(a00, a11)
+
+  //4.d3.interpolateDate(date1,date2)-->  插值器返回的值其实是一个变量 该变量指向一个内存地址
+  // 但是该内存地址的值是动态计算的 所以后续返回的插值会影响到之前的插值
+  const date = d3.interpolateDate(new Date(1994, 5, 4), new Date(2020, 7, 24))
+  const d0 = date(0)
+  const d1 = date(1)
+  console.log(d0, d1) //Mon Aug 24 2020 00:00:00 GMT+0800 Mon Aug 24 2020 00:00:00 GMT+0800
+
+  const d00 = new Date(date(0))
+  const d11 = new Date(date(1))
+  console.log(d00, d11) //Sat Jun 04 1994 00:00:00 GMT+0800 Mon Aug 24 2020 00:00:00 GMT+0800
+
+  //5.d3.interpolateObject(obj1,obj2)--> 插值器返回的值其实是一个变量 该变量指向一个内存地址
+  // 但是该内存地址的值是动态计算的 所以后续返回的插值会影响到之前的插值
+  // 但是拷贝对象存在浅拷贝和深拷贝的区别 所以谨慎使用
+</script>
+</body>
+</html>

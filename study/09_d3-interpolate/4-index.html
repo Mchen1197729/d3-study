@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-interpolate④</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  const interpolator = d3.interpolateArray(
+      ['Jack', '185cm', 20],
+      ['Rose', '168cm', 17]
+  )
+
+  console.log(interpolator(0.5))
+</script>
+</body>
+</html>
