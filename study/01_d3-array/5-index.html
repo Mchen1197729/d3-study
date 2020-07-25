@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-array</title>
+  <script src="https://d3js.org/d3-array.v2.min.js"></script>
+</head>
+<body>
+<script>
+  const athletes = [
+    {name: "Floyd Mayweather", sport: "Boxing", nation: "United States", earnings: 285},
+    {name: "Lionel Messi", sport: "Soccer", nation: "Argentina", earnings: 111},
+    {name: "Cristiano Ronaldo", sport: "Soccer", nation: "Portugal", earnings: 108},
+    {name: "Conor McGregor", sport: "MMA", nation: "Ireland", earnings: 99},
+    {name: "Neymar", sport: "Soccer", nation: "Brazil", earnings: 90},
+    {name: "LeBron James", sport: "Basketball", nation: "United States", earnings: 85.5},
+    {name: "Roger Federer", sport: "Tennis", nation: "Switzerland", earnings: 77.2},
+    {name: "Stephen Curry", sport: "Basketball", nation: "United States", earnings: 76.9},
+    {name: "Matt Ryan", sport: "Football", nation: "United States", earnings: 67.3},
+    {name: "Matthew Stafford", sport: "Football", nation: "United States", earnings: 59.5}
+  ]
+
+  console.log('*************d3.group(array[,accessor1[,accessor2],,,])**************')
+  //返回一个Map对象 对象的键就是Boxing,Soccer,MMA,Basketball,Football 对应的值是一个数组
+  console.log(d3.group(athletes, d => d.sport))
+  const map1 = d3.group(athletes, d => d.sport)
+  console.log(map1.get('Basketball'))
+
+  //如果指定了多个accessor函数 那么会返回嵌套的Map对象 第一层的键是第一个accessor指定的键 以此类推
+  //最后一层的值是用数组来表示的
+  const map2 = d3.group(athletes, d => d.nation, d => d.sport)
+  console.log(map2)
+  console.log(map2.get('United States').get('Basketball'))
+
+  console.log('*************d3.groups(array[,accessor1[,accessor2,,,]])**************')
+  //d3.groups()返回的是一个数组 机制都与d3.group()一样
+  const arr1 = d3.groups(athletes, d => d.name)
+  console.log(arr1)
+
+  const arr2 = d3.groups(athletes, d => d.nation, d => d.sport)
+  console.log(arr2)
+
+  //d3.groups()&d3.group()内部使用===符号来判断是否是同一个键
+  //因此 如果按照对象属性进行归类 那么无法实现 因为对象都是不相等的(除非指向同一个内存地址)
+  const transactions1 = [
+    {name: "Jim", amount: 3400, date: new Date("2015-11-12")},
+    {name: "Carl", amount: 12011, date: new Date("2015-11-12")},
+    {name: "Carl", amount: 2391, date: new Date("2015-11-12")},
+    {name: "Stacy", amount: 3405, date: new Date("2015-10-09")},
+    {name: "Stacy", amount: 1201, date: new Date("2016-01-04")}
+  ]
+  //达不到分组的效果
+  console.log(d3.group(transactions1, d => d.date))
+
+  //这样虽然可以达到分组的作用 但是分组后的键值已经变成的+new Date()-->一串数字
+  console.log(d3.group(transactions1, d => +d.date))
+
+  const date1 = new Date("2015-11-12")
+  const date2 = new Date("2015-10-09")
+  const date3 = new Date("2016-01-04")
+  const transactions2 = [
+    {name: "Jim", amount: 3400, date: date1},
+    {name: "Carl", amount: 12011, date: date1},
+    {name: "Carl", amount: 2391, date: date1},
+    {name: "Stacy", amount: 3405, date: date2},
+    {name: "Stacy", amount: 1201, date: date3}
+  ]
+  //可以达到分组的效果
+  console.log(d3.group(transactions2, d => d.date))
+</script>
+</body>
+</html>

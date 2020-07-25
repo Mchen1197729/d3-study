@@ -17,22 +17,35 @@
   * 求最大最小值
   *   access是一个可选的函数 如果传入accessor的值 那么会在获取最值之前使用array.map(accessor)进行计算
   * */
-  const [min, max] = d3.extent(arr, (item, index) => item + index)
+  const [min, max] = d3.extent(arr, (item, index) => item + 1)
   console.log(min, max)
 
   /*
   * d3.sum(array[,accessor]):Number
   * 求和
   * */
-  const sum = d3.sum(arr, (item, index) => item + index)
+  const sum = d3.sum(arr, (item, index) => item + 1)
   console.log(sum)
 
   /*
   * d3.mean(array[,accessor])
   * 求平均值
   * */
-  const mean = d3.mean(arr, (item, index) => item + index)
+  const mean = d3.mean(arr, (item, index) => item + 1)
   console.log(mean)
+
+  const names = ["joe", "sally", "norbert", "ann", "rafael"]
+  const ages = [32, 13, 14, 22, 76]
+  const preferences = ["ice cream", "juice", "cake", "Fishing", "Walking"]
+  console.log(d3.zip(names, ages, preferences))
+  console.log(new Map(d3.zip(names, preferences, ages)))
+
+  console.log(d3.transpose([names, ages, preferences]))
+
+  console.log(new Map(d3.zip(names, ages)))
+  console.log(new Map(d3.transpose([names, ages])))
+
+  console.log(d3.ticks(1, 100, 11))
 </script>
 </body>
 </html>

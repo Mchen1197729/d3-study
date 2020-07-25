@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-array</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  const arr = Array.from({length: 1000}, () => Math.random() * 20)
+
+  const bin1 = d3.bin()
+  console.log(bin1(arr))
+</script>
+</body>
+</html>

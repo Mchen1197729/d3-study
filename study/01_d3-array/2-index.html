@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-array</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * d3.cumsum(array[,accessor])
+  *   返回一个与原数组长度相同的数组 该数组的第i个元素是原数组前i个元素的和
+  * */
+  console.log(d3.cumsum([1, 2, 3, 4]))
+
+  const profit = [
+    {date: '2020-01', money: 2000},
+    {date: '2020-02', money: 3000},
+    {date: '2020-03', money: 4000},
+    {date: '2020-04', money: 5000},
+    {date: '2020-05', money: 6000},
+    {date: '2020-06', money: 2000},
+    {date: '2020-07', money: 2800},
+  ]
+
+  console.log(d3.cumsum(profit, d => d.money))
+
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-array</title>
+  <script src="https://d3js.org/d3-array.v2.min.js"></script>
+</head>
+<body>
+<script>
+  const friends = [
+    {name: "BORIS", age: 15},
+    {name: "bastien", age: 2},
+    {name: "carmen D.", age: 18},
+    {name: "DIVINE", age: 35}
+  ]
+
+  console.log(d3.min(friends, d => d.age)) //2
+  console.log(d3.max(friends, d => d.age)) //35
+
+  console.log(d3.minIndex(friends, d => d.age)) //1
+  console.log(d3.maxIndex(friends, d => d.age)) //3
+
+  console.log(d3.least(friends, d => d.age)) //{name: "bastien", age: 2}
+  console.log(d3.greatest(friends, d => d.age)) //{name: "DIVINE", age: 35}
+
+  console.log(d3.leastIndex(friends, d => d.age)) //1
+  console.log(d3.greatestIndex(friends, d => d.age)) //3
+</script>
+</body>
+</html>
