@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-scale3</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+<body>
+<script>
+  const arr = ['a', 'b', 'c', 'd', 'e']
+  const s = d3.scaleOrdinal(arr)
+  console.log(s(0)) //a
+  console.log(s(1)) //b
+  console.log(s(2)) //c
+  console.log(s(3)) //d
+  console.log(s(4)) //e
+  console.log(s(5)) //a
+
+  console.log(d3.schemeCategory10) //一个包含10个颜色值的数组
+
+  const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+  for (let i = 0; i < 10; i++) {
+    console.log(color(i))
+  }
+</script>
+</body>
+</html>

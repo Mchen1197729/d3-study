@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-drag③</title>
+  <script src="../lib/d3.v5.js"></script>
+  <script src="../lib/d3-delaunay.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 400
+  const radius = 32
+  const dataset = Array.from({length: 20}, (a, b) => ({
+    cx: Math.random() * (width - radius * 2) + radius, //这样可以保证cx的范围在(radius,width-radius)之内
+    cy: Math.random() * (height - radius * 2) + radius, //这样可以保证cy的范围在(radius,height-radius)之内
+    color: d3.schemeCategory10[b % 10]
+  }))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  svg.selectAll('circle')
+      .data(dataset)
+      .join('circle')
+      .attr('cx', d => d.cx)
+      .attr('cy', d => d.cy)
+      .attr('r', radius)
+      .attr('fill', d => d.color)
+      .call(
+          d3.drag()
+              .on('start', function () {
+                //此处的d就是该元素d3.select(this)绑定的数据datum
+                //console.log(d)
+                d3.select(this).raise().attr('stroke', '#000')
+              })
+              .on('drag', function (d) {
+                //此处的d就是该元素d3.select(this)绑定的数据datum
+                //d3.event.x,d3.event.y就是鼠标此时此刻的横纵坐标
+                //console.log(d3.event)
+                d3.select(this).attr("cx", d.cx = d3.event.x).attr("cy", d.cy = d3.event.y)
+              })
+              .on('end', function () {
+                //此处的d就是该元素d3.select(this)绑定的数据datum
+                //console.log(d)
+                d3.select(this).attr('stroke', 'none')
+              })
+      )
+
+</script>
+</body>
+</html>

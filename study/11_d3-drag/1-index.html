@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-drag①</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 600
+  const radius = 32
+  const dataset = Array.from({length: 10}, (a, b) => ({
+    cx: Math.random() * (width - radius * 2) + radius, //这样可以保证cx的范围在(radius,width-radius)之内
+    cy: Math.random() * (height - radius * 2) + radius, //这样可以保证cy的范围在(radius,height-radius)之内
+    color: d3.schemeCategory10[b % 10]
+  }))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .attr('stroke-width', 2)
+      .style('background', '#eee')
+
+  const item = svg.selectAll('circle')
+      .data(dataset).join('circle')
+      .attr('cx', d => d.cx)
+      .attr('cy', d => d.cy)
+      .attr('r', radius)
+      .attr('fill', d => d.color)
+
+  // item.append('text')
+  //     .attr('x', d => d.cx)
+  //     .attr('y', d => d.cy)
+  //     .attr('dy', '.3em')
+  //     .attr('text-anchor', 'middle')
+  //     .attr('stroke', '#fff')
+  //     .attr('stroke-width', 2)
+  //     .text((d, i) => i)
+
+  //定义drag函数
+  const drag = d3.drag()
+      .on('start', function (d) {
+        d3.select(this).attr("stroke", "black")
+      })
+      .on('drag', function (d) {
+        console.log(d)
+        d3.select(this).raise().attr("cx", d.cx = d3.event.x).attr("cy", d.cy = d3.event.y)
+      })
+      .on('end', function () {
+        d3.select(this).attr("stroke", null)
+      })
+
+  item.call(drag) //call(drag)用来处理拖拽行为
+      //on('click')用来处理点击行为
+      .on("click", function (d, i) {
+        if (d3.event.defaultPrevented) return
+        d3.select(this).transition()
+            .attr("fill", "black")
+            .attr("r", radius * 2)
+            .transition()
+            .attr("r", radius)
+            .attr("fill", d3.schemeCategory10[i % 10])
+      })
+
+</script>
+</body>
+</html>
