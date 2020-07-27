@@ -21,7 +21,10 @@
       .attr('stroke-width', 2)
       .style('background', '#eee')
 
-  const item = svg.selectAll('circle')
+  const g = svg.append('g')
+      .attr('cursor', 'grab')
+
+  const item = g.selectAll('circle')
       .data(dataset).join('circle')
       .attr('cx', d => d.cx)
       .attr('cy', d => d.cy)
@@ -39,15 +42,16 @@
 
   //定义drag函数
   const drag = d3.drag()
-      .on('start', function (d) {
+      .on('start', function () {
         d3.select(this).attr("stroke", "black")
+        g.attr("cursor", "grabbing")
       })
       .on('drag', function (d) {
-        console.log(d)
         d3.select(this).raise().attr("cx", d.cx = d3.event.x).attr("cy", d.cy = d3.event.y)
       })
       .on('end', function () {
         d3.select(this).attr("stroke", null)
+        g.attr("cursor", "grab")
       })
 
   item.call(drag) //call(drag)用来处理拖拽行为

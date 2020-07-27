@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-zoom①</title>
+  <script src="../lib/d3.v5.js"></script>
+  <script src="../lib/d3-delaunay.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  console.log(d3.schemeOranges)
+  console.log(d3.schemeBlues)
+  console.log(d3.schemeGreens)
+
+  //顺序颠倒的话应用的变形是不同的
+  console.log(d3.zoomIdentity.scale(2).translate(100, 50)) // {k:2,x:200,y:100}
+  console.log(d3.zoomIdentity.translate(100, 50).scale(2)) // {k:2,x:100,y:50}
+  //要注意变换的顺序 平移一定要在缩放前
+  console.log(d3.zoomIdentity.translate(100, 50).scale(2).toString()) // translate(100,50) scale(2)-->可以直接用于attr属性
+  console.log(d3.zoomIdentity.toString()) //translate(0,0) scale(1)
+
+  const transform = d3.zoomIdentity.translate(50, 100).scale(3)
+  //transform.apply(point) transform.applyX(x) transform.applyY(y)
+  //返回(a,b)点经过transform:translate(x,y) scale(k)变换后的新的点坐标 [ka+x,kb+y]
+  console.log(transform.apply([10, 20])) //[80, 160]
+
+  //根据变换后的点的坐标 逆推出变换前的点的坐标
+  //transform.invert(point) transform.invertX(x) transform.invertY(y)
+  console.log(transform.invert([80, 160])) //[10,20]
+
+  //transform.rescaleX(x) transform.rescaleY(y)
+
+  const width = 750, height = 500
+
+  const data = Array.from({length: 100}, () => [100 * Math.random(), Math.random()])
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const x = d3.scaleLinear()
+      .domain(d3.extent(data, d => d[0]))
+      .range([30, width - 10])
+      .nice()
+
+  const y = d3.scaleLinear()
+      .domain(d3.extent(data, d => d[1]))
+      .range([height - 20, 10])
+      .nice()
+
+  const xAxis = (g, scale) => g
+      .attr("transform", `translate(0,${y(0)})`)
+      .call(d3.axisBottom(scale))
+      .call(g => g.select(".domain").remove())
+
+
+  const yAxis = (g, scale) => g
+      .attr("transform", `translate(${x(0)},0)`)
+      .call(d3.axisLeft(scale))
+      .call(g => g.select(".domain").remove())
+
+  const vo = svg.append("path")
+  const gx = svg.append("g")
+  const gy = svg.append("g")
+
+  const dots = svg.append("g")
+      .selectAll("ellipse")
+      .data(data)
+      .join("ellipse")
+      .attr("fill", () => d3.schemeBlues[9][(Math.random() * 9) | 0])
+
+  // z holds a copy of the previous transform, so we can track its changes
+  let z = d3.zoomIdentity //{x:0,y:0,k:1}
+
+  // set up the ancillary zooms and an accessor for their transforms
+  const zoomX = d3.zoom().scaleExtent([0.1, 10])
+  const zoomY = d3.zoom().scaleExtent([0.2, 5])
+
+  //这里一定要写成函数的形式 否则 tx&ty所代表的Transform对象是永远都不会变的
+  const tx = () => d3.zoomTransform(gx.node())
+  const ty = () => d3.zoomTransform(gy.node())
+
+  gx.call(zoomX).attr("pointer-events", "none")
+  gy.call(zoomY).attr("pointer-events", "none")
+
+  // active zooming
+  const zoom = d3.zoom().on("zoom", function () {
+    const e = d3.event
+    const t = e.transform
+    const k = t.k / z.k
+    const point = e.sourceEvent ? d3.mouse(this) : [width / 2, height / 2]
+
+    // is it on an axis? is the shift key pressed?
+    const doX = point[0] > x.range()[0]
+    const doY = point[1] < y.range()[0]
+    const shift = e.sourceEvent && e.sourceEvent.shiftKey
+
+    if (k === 1) {
+      // pure translation?
+      doX && gx.call(zoomX.translateBy, (t.x - z.x) / tx().k, 0)
+      doY && gy.call(zoomY.translateBy, 0, (t.y - z.y) / ty().k)
+    } else {
+      // if not, we're zooming on a fixed point
+      doX && gx.call(zoomX.scaleBy, shift ? 1 / k : k, point)
+      doY && gy.call(zoomY.scaleBy, k, point)
+    }
+    z = t
+
+    redraw()
+  })
+
+  function redraw() {
+    //变换X&Y轴
+    const xr = tx().rescaleX(x)
+    const yr = ty().rescaleY(y)
+    //重新添加X&Y轴
+    gx.call(xAxis, xr)
+    gy.call(yAxis, yr)
+
+    //直到这里才给椭圆添加cx cy  rx ry属性
+    // cx xy是点的坐标 直接使用新的scaleX 和 scaleY 求得
+    // rx ry是长度 直接使用
+    dots
+        .attr("cx", d => xr(d[0]))
+        .attr("cy", d => yr(d[1]))
+        .attr("rx", 10 * Math.sqrt(tx().k))
+        .attr("ry", 6 * Math.sqrt(ty().k))
+
+    vo.attr("d", d3.Delaunay.from(data.map(d => [xr(d[0]), yr(d[1])]))
+        .voronoi([35, 0, width, height - 25])
+        .render())
+        .attr("fill", "none")
+        .attr("stroke", "#ccc")
+        .attr("stroke-width", 0.5)
+  }
+
+  svg
+      .call(zoom)
+      .call(zoom.transform, d3.zoomIdentity.scale(0.8))
+
+
+</script>
+</body>
+</html>

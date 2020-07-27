@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-zoom②</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 400, radius = 1.5
+  const randomX = d3.randomNormal(width / 2, 80)
+  const randomY = d3.randomNormal(height / 2, 80)
+  const dataset = Array.from({length: 200}, () => [randomX(), randomY()])
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const circles = svg
+      .selectAll('circle')
+      .data(dataset)
+      .join('circle')
+      .attr('cx', d => d[0])
+      .attr('cy', d => d[1])
+      .attr('r', radius)
+      .attr('fill', () => Math.random() > 0.5 ? 'steelblue' : 'tomato')
+
+  const zoom = d3.zoom()
+      .extent([[0, 0], [width, height]]) //接受一个嵌套数组作为参数
+      .scaleExtent([1, 8])
+      .duration(750)
+      .on('zoom', function () {
+        circles.attr('transform', d3.event.transform)
+      })
+
+
+  svg.call(zoom)
+
+
+</script>
+</body>
+</html>
