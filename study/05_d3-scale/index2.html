@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>d3-scale2 d3.scaleTime()</title>
-  <script src='https://d3js.org/d3.v5.min.js'></script>
+  <script src="../lib/d3.v5.js"></script>
 </head>
 <body>
 <script>
@@ -14,6 +14,9 @@
   const dateFormat30 = date.tickFormat(30, '%Y-%m-%d %H:%M:%S')
 
   console.log(date.ticks(30).map(dateFormat30))
+  console.log(date.invert(1))
+
+  const scale = d3.scaleTime().tickFormat(null, '%Y-%m-%d %H:%M:%S')
 </script>
 </body>
 </html>

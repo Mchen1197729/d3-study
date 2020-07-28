@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-scale⑤</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<script>
+  /*
+  * d3-scale比例尺模块
+  * 返回一个比例器 将制定的domain里的值按照一定的方式映射得到range中的值
+  *   相当于是定义了一个函数 自变量为domain里的值 因变量为range里的值
+  *
+  * 1.连续比例尺：d3.scaleLinear() d3.scalePow() d3.scaleLog()
+  * 2.时间比例尺：d3.scaleTime()
+  * 3.阈值比例尺：d3.scaleThreshold()
+  *
+  * const continuous = d3.scaleLinear().domain([0,1]).range([0,1])
+  * */
+  const scale = d3.scaleLinear()
+      .domain([10, 20])
+      .rangeRound([10, 100])
+
+  console.log(scale(15.5))
+
+  const scale2 = d3.scaleLinear()
+      .domain([0, 1])
+      .range([0, 1])
+      .tickFormat(null, '.2%')
+  console.log(scale2(.5)) //注意 进行格式化后返回的值都是字符串类型的
+
+</script>
+</body>
+</html>

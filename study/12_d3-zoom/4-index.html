@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-zoom④</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 400, radius = 2
+  const margin = {top: 10, right: 20, bottom: 25, left: 30}
+
+  const dataset = Array.from({length: 1000}, (_, i) => ({
+    cx: (Math.random() - 0.5) * width / 2 + width / 2,
+    cy: (Math.random() - 0.5) * height / 2 + height / 2,
+    color: d3.schemeCategory10[i % 10]
+  }))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const g = svg.append('g')
+      .attr('cursor', 'grab')
+
+  const xScale = d3.scaleLinear()
+      //.domain(d3.extent(dataset, d => d.cx))
+      .domain([0, 1])
+      .range([margin.left, width - margin.right])
+      .nice()
+  const yScale = d3.scaleLinear()
+      //.domain(d3.extent(dataset, d => d.cy))
+      .domain([0, 1])
+      .range([height - margin.bottom, margin.top])
+      .nice()
+
+  const xAxis = (g, scale) => g.attr('transform', `translate(0,${yScale(0)})`)
+      .call(d3.axisBottom(scale))
+      .call(g => g.select('.domain').remove())
+
+  const yAxis = (g, scale) => g.attr('transform', `translate(${xScale(0)},0)`)
+      .call(d3.axisLeft(scale))
+      .call(g => g.select('.domain').remove())
+
+  const gx = svg.append('g').call(xAxis, xScale)
+  const gy = svg.append('g').call(yAxis, yScale)
+
+  const tx = () => d3.zoomTransform(gx.node())
+  const ty = () => d3.zoomTransform(gy.node())
+
+  g.selectAll('circle')
+      .data(dataset)
+      .join('circle')
+      .attr('cx', d => d.cx)
+      .attr('cy', d => d.cy)
+      .attr('r', radius)
+      .attr('fill', d => d.color)
+
+  //在所有的circle上监听drag事件
+  const drag = d3.drag()
+      .on('start', function () {
+        d3.select(this).raise()
+        g.attr('cursor', 'grabbing')
+      })
+      .on('drag', function (d) {
+        d3.select(this).attr('cx', d.cx = d3.event.x).attr('cy', d.cy = d3.event.y)
+      })
+      .on('end', function () {
+        g.attr('cursor', 'grab')
+      })
+  g.selectAll('circle')
+      .call(drag)
+
+  //在svg上监听zoom事件
+  const zoom = d3.zoom()
+      .duration(750)
+      .extent([[0, 0], [width, height]])
+      .scaleExtent([1, 10])
+      .on('zoom', function () {
+        g.attr('transform', d3.event.transform)
+        //重新计算x y轴
+        const xScaleNew = tx().rescaleX(xScale)
+        const yScaleNew = ty().rescaleY(yScale)
+
+        gx.call(xAxis, xScaleNew)
+        gy.call(yAxis, yScaleNew)
+      })
+  svg.call(zoom)
+      .call(zoom.transform, d3.zoomIdentity)
+</script>
+</body>
+</html>

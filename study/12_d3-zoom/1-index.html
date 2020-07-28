@@ -61,8 +61,8 @@
       .call(g => g.select(".domain").remove())
 
   const vo = svg.append("path")
-  const gx = svg.append("g")
-  const gy = svg.append("g")
+  const gx = svg.append("g") //x轴的容器
+  const gy = svg.append("g") //y轴的容器
 
   const dots = svg.append("g")
       .selectAll("ellipse")
@@ -70,43 +70,50 @@
       .join("ellipse")
       .attr("fill", () => d3.schemeBlues[9][(Math.random() * 9) | 0])
 
+  // set up the ancillary zooms and an accessor for their transforms
+  const zoomX = d3.zoom().scaleExtent([0.1, 10]) //设置X轴的缩放的范围
+  const zoomY = d3.zoom().scaleExtent([0.2, 5])  //设置Y轴的缩放的范围
+
+  //这里一定要写成函数的形式 否则 tx&ty所代表的Transform对象是永远都不会变的
+  // tx是一个函数 返回值是一个Transform对象 代表此时此刻的x轴的变换
+  const tx = () => d3.zoomTransform(gx.node())
+  // ty是一个函数 返回值是一个Transform对象 代表此时此刻的y轴的变换
+  const ty = () => d3.zoomTransform(gy.node())
+
+  gx.call(zoomX).attr("pointer-events", "none") //给x轴的容器gx添加zoom监听
+  gy.call(zoomY).attr("pointer-events", "none") //给y轴的容器gy添加zoom监听
+
   // z holds a copy of the previous transform, so we can track its changes
   let z = d3.zoomIdentity //{x:0,y:0,k:1}
 
-  // set up the ancillary zooms and an accessor for their transforms
-  const zoomX = d3.zoom().scaleExtent([0.1, 10])
-  const zoomY = d3.zoom().scaleExtent([0.2, 5])
-
-  //这里一定要写成函数的形式 否则 tx&ty所代表的Transform对象是永远都不会变的
-  const tx = () => d3.zoomTransform(gx.node())
-  const ty = () => d3.zoomTransform(gy.node())
-
-  gx.call(zoomX).attr("pointer-events", "none")
-  gy.call(zoomY).attr("pointer-events", "none")
-
   // active zooming
   const zoom = d3.zoom().on("zoom", function () {
+    //在该回调函数中 this就svg对象(dom对象)
+    //d3.mouse(this)返回的是一个数组[x,y]表示发生zoom事件时鼠标的位置信息(相对于this参考系)
+    // console.log(d3.mouse(this))
     const e = d3.event
     const t = e.transform
-    const k = t.k / z.k
+    const k = t.k / z.k //k就是这次的transform.scale/上一次的transform.scale
+    //如果是滚轮触发的zoom事件 则point就是 d3.mouse(this) 否则就是svg的中点坐标
     const point = e.sourceEvent ? d3.mouse(this) : [width / 2, height / 2]
 
     // is it on an axis? is the shift key pressed?
-    const doX = point[0] > x.range()[0]
-    const doY = point[1] < y.range()[0]
-    const shift = e.sourceEvent && e.sourceEvent.shiftKey
+    const doX = point[0] > x.range()[0] //判断point的x坐标是否大于x轴的最小值 如果是true 则x轴需要应用zoom变换
+    const doY = point[1] < y.range()[0] //判断point的y坐标是否小于y轴的最大值 如果是true 则y轴需要应用zoom变换
+    const shift = e.sourceEvent && e.sourceEvent.shiftKey //如果是true 则表明shift键被按下
 
     if (k === 1) {
-      // pure translation?
+      // pure translation? 只应用scale 没有应用translate
       doX && gx.call(zoomX.translateBy, (t.x - z.x) / tx().k, 0)
       doY && gy.call(zoomY.translateBy, 0, (t.y - z.y) / ty().k)
+      // doX && gx.call(zoomX.transform, t)
+      // doY && gy.call(zoomX.transform, t)
     } else {
-      // if not, we're zooming on a fixed point
+      //可能既有scale 也有translate 而且缩放的中心就是point点
       doX && gx.call(zoomX.scaleBy, shift ? 1 / k : k, point)
       doY && gy.call(zoomY.scaleBy, k, point)
     }
     z = t
-
     redraw()
   })
 
@@ -137,6 +144,7 @@
 
   svg
       .call(zoom)
+      //页面加载完成后立刻触发一次 start zoom end事件
       .call(zoom.transform, d3.zoomIdentity.scale(0.8))
 
 
