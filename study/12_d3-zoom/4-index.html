@@ -11,6 +11,7 @@
   const width = 750, height = 400, radius = 2
   const margin = {top: 10, right: 20, bottom: 25, left: 30}
 
+  //cx取值范围[width/4,3*width/4] cy取值范围[height/4,3*height/4]
   const dataset = Array.from({length: 1000}, (_, i) => ({
     cx: (Math.random() - 0.5) * width / 2 + width / 2,
     cy: (Math.random() - 0.5) * height / 2 + height / 2,
@@ -24,22 +25,27 @@
   const g = svg.append('g')
       .attr('cursor', 'grab')
 
+  //x比例尺
   const xScale = d3.scaleLinear()
-      //.domain(d3.extent(dataset, d => d.cx))
-      .domain([0, 1])
+      .domain(d3.extent(dataset, d => d.cx))
+      // .domain([0, 1])
       .range([margin.left, width - margin.right])
       .nice()
+
+  //y比例尺
   const yScale = d3.scaleLinear()
-      //.domain(d3.extent(dataset, d => d.cy))
-      .domain([0, 1])
+      .domain(d3.extent(dataset, d => d.cy))
+      // .domain([0, 1])
       .range([height - margin.bottom, margin.top])
       .nice()
 
-  const xAxis = (g, scale) => g.attr('transform', `translate(0,${yScale(0)})`)
+  //xAxis是一个函数 调用方式:svg.append('g').call(xAxis,xScale)
+  const xAxis = (g, scale) => g.attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(scale))
       .call(g => g.select('.domain').remove())
 
-  const yAxis = (g, scale) => g.attr('transform', `translate(${xScale(0)},0)`)
+  //yAxis是一个函数 调用方式:svg.append('g').call(yAxis,yScale)
+  const yAxis = (g, scale) => g.attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(scale))
       .call(g => g.select('.domain').remove())
 

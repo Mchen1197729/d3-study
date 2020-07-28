@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-zoom⑤</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  console.log(d3.schemeCategory10)
+  const width = 750, height = 400, radius = 4
+  const margin = {top: 10, right: 20, bottom: 25, left: 30}
+  const data = Array.from({length: 100}, (_, i) => ({
+    cx: Math.random(),
+    cy: Math.random(),
+    color: d3.schemeCategory10[i % 10]
+  }))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const x = d3.scaleLinear()
+      .domain([0, 1])
+      .range([margin.left, width - margin.right])
+      .nice()
+
+  const y = d3.scaleLinear()
+      .domain([0, 1])
+      .range([height - margin.bottom, margin.top])
+      .nice()
+
+  const xAxis = (g, scale) => g.attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisTop(scale))
+      .call(g => g.select('.domain').remove())
+
+  const yAxis = (g, scale) => g.attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisRight(scale))
+      .call(g => g.select('.domain').remove())
+
+  const gx = svg.append('g').call(xAxis, x)
+  const gy = svg.append('g').call(yAxis, y)
+
+  const tx = () => d3.zoomTransform(gx.node())
+  const ty = () => d3.zoomTransform(gy.node())
+
+  const gDot = svg.append('g')
+      .attr('cursor', 'grab')
+
+  gDot.selectAll('circle')
+      .data(data)
+      .join('circle')
+      .attr('cx', d => x(d.cx))
+      .attr('cy', d => y(d.cy))
+      .attr('r', radius)
+      .attr('fill', d => d.color)
+
+  svg.call(
+      d3.zoom()
+          .on('zoom', function () {
+            gDot.attr('transform', d3.event.transform)
+            //重新添加x、y轴
+            const xNew = tx().rescaleX(x)
+            const yNew = ty().rescaleY(y)
+            gx.call(xAxis, xNew)
+            gy.call(yAxis, yNew)
+
+          })
+  )
+</script>
+</body>
+</html>

@@ -22,6 +22,7 @@
       .domain([10, 20])
       .rangeRound([10, 100])
 
+
   console.log(scale(15.5))
 
   const scale2 = d3.scaleLinear()
@@ -29,6 +30,15 @@
       .range([0, 1])
       .tickFormat(null, '.2%')
   console.log(scale2(.5)) //注意 进行格式化后返回的值都是字符串类型的
+
+  console.log('**************************')
+  const x = d3.scaleLinear()
+      .domain([100, 1000])
+      .range([0, 900])
+  console.log(x.ticks(20))
+  console.log(x.ticks())
+
+  console.log(x)
 
 </script>
 </body>
