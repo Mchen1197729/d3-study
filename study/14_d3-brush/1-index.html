@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-brush①</title>
+  <script src="../lib/d3.v5.js"></script>
+  <script src="../lib/axios.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  axios.get('./apple.csv')
+      .then(response => {
+        const data = Object.assign(d3.csvParse(response.data, d3.autoType).map(({date, close}) => ({
+          date,
+          value: close
+        })), {y: "↑ Close $"})
+        // console.log(data)
+
+        const width = 750, height = 400, focusHeight = 100
+        const margin = ({top: 20, right: 20, bottom: 30, left: 40})
+
+        const svg = d3.select('svg')
+            .attr('viewBox', [0, 0, width, focusHeight])
+            .style('background', '#eee')
+
+        const x = d3.scaleUtc()
+            .domain(d3.extent(data, d => d.date))
+            .range([margin.left, width - margin.right])
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)])
+            .range([height - margin.bottom, margin.top])
+
+        const xAxis = (g, x, height) => g
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+
+        const yAxis = (g, y, title) => g
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.selectAll(".title").data([title]).join("text")
+                .attr("class", "title")
+                .attr("x", -margin.left)
+                .attr("y", 10)
+                .attr("fill", "currentColor")
+                .attr("text-anchor", "start")
+                .text(title))
+
+        const area = (x, y) => d3.area()
+            .defined(d => !isNaN(d.value))
+            .x(d => x(d.date))
+            .y0(y(0))
+            .y1(d => y(d.value))
+
+        const brush = d3.brushX()
+            .extent([[margin.left, 0.5], [width - margin.right, focusHeight - margin.bottom + 0.5]])
+            .on("brush", function () {
+              if (d3.event.selection) {
+                svg.property("value", d3.event.selection.map(x.invert, x).map(d3.utcDay.round))
+                svg.dispatch("input")
+              }
+            })
+            .on("end", function () {
+              if (!d3.event.selection) {
+                gb.call(brush.move, defaultSelection)
+              }
+            })
+
+        const defaultSelection = [x(d3.utcYear.offset(x.domain()[1], -1)), x.range()[1]]
+
+        svg.append("g")
+            .call(xAxis, x, focusHeight)
+
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "steelblue")
+            .attr("d", area(x, y.copy().range([focusHeight - margin.bottom, 4])))
+
+        const gb = svg.append("g")
+            .call(brush)
+            .call(brush.move, defaultSelection)
+
+      })
+
+
+</script>
+</body>
+</html>

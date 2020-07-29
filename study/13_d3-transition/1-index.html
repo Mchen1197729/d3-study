@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-transition①</title>
+  <script src="../lib/d3.v5.js"></script>
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .steelblue {
+      width: 200px;
+      height: 200px;
+      background-color: #eee;
+    }
+
+    .tomato {
+      width: 100px;
+      height: 100px;
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+<div class="steelblue"></div>
+<hr>
+<div class="tomato"></div>
+<script>
+  const t1 = d3.select('.steelblue').transition().duration(750)
+  console.log(t1)
+
+  const t2 = d3.select('.tomato').transition('bar')
+  console.log(t2)
+
+
+  console.log(d3.transition('foo').duration(3000))
+</script>
+</body>
+</html>

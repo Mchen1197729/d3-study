@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-brush②</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 120
+  const margin = {top: 10, right: 20, bottom: 20, left: 20}
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#eee')
+
+  const x = d3.scaleLinear()
+      .domain([0, 10])
+      .range([margin.left, width - margin.right])
+
+  //rx就是一个随机数生成器 调用后返回一个在[0,10]之间的随机数
+  const rx = d3.randomUniform(...x.domain())
+  //ry是一个随机数生成器 调用后返回一个随机数 该随机数的期望值是height/2 标准差是height/12
+  //就是说调用该函数后悔返回一个在[期望值-标准差,期望值+标准差]之间的随机数
+  const ry = d3.randomNormal(height / 2, height / 12)
+
+  const xAxis = (g, scale) => g
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(scale))
+
+  const circle = svg.append("g")
+      .attr("fill-opacity", 0.2)
+      .selectAll("circle")
+      .data(Float64Array.from({length: 800}, rx))
+      .join("circle")
+      .attr("transform", d => `translate(${x(d)},${ry()})`)
+      .attr("r", 3.5)
+
+  const brush = d3.brushX()
+      .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
+      .on('start brush end', function () {
+        // console.log(d3.event)
+        const selection = d3.event.selection
+        if (selection === null) {
+          console.log('null')
+          circle.attr("stroke", null)
+        } else {
+          const [x0, x1] = selection.map(x.invert)
+          // console.log([x0, x1])
+          circle.attr("fill", d => x0 <= d && d <= x1 ? "steelblue" : null)
+        }
+      })
+
+  svg.append("g")
+      .call(xAxis, x)
+
+  svg.append("g")
+      .call(brush)
+      .call(brush.move, [3, 6].map(x))
+      .call(g => g.select(".overlay")
+          .datum({type: "selection"})
+          .on("mousedown touchstart", function () {
+            // console.log('mousedown')
+            const dx = x(2) - x(0) // dx是个固定的长度.
+            const [cx] = d3.mouse(this) //cx就是鼠标或者触摸点此时此刻的横坐标
+            //x0 x1就是新的选中的区域的开始横坐标 结束横坐标
+            const [x0, x1] = [cx - dx / 2, cx + dx / 2]
+            //X0 X1就是x轴的开始点横坐标 结束点横坐标
+            const [X0, X1] = x.range()
+            let move
+            if (x0 < X0) move = [X0, X0 + dx]
+            else if (x1 > X1) move = [X1 - dx, X1]
+            else move = [x0, x1]
+            d3.select(this.parentNode)
+                .call(brush.move, move)
+          }))
+</script>
+</body>
+</html>

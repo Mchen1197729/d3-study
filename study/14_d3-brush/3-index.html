@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-brush③</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 780, height = 120, radius = 3.5
+  const margin = {top: 10, right: 20, bottom: 20, left: 20}
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#efefef')
+
+  const x = d3.scaleLinear()
+      .domain([0, 10])
+      .range([margin.left, width - margin.right])
+
+  const randomX = d3.randomUniform(...x.domain())
+  const randomY = d3.randomNormal(height / 2, height / 10)
+
+  const data = Array.from({length: 800}, () => ({
+    cx: randomX(),
+    cy: randomY()
+  }))
+
+  const g = svg.append('g')
+  const gx = svg.append('g')
+  const gb = svg.append('g')
+
+  const circles = g.selectAll('circle')
+      .data(data)
+      .join('circle')
+      .attr('fill-opacity', .2)
+      .attr('cx', d => x(d.cx))
+      .attr('cy', d => d.cy)
+      .attr('r', radius)
+
+  const xAxis = (g, scale) => g.attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(scale))
+      .call(g => g.select('.domain').remove())
+
+  gx.call(xAxis, x)
+
+  const brush = d3.brushX()
+      .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
+      .on('start brush end', function () {
+        // console.log(d3.event)
+        const selection = d3.event.selection
+        if (selection === null) {
+          circles.attr('stroke', null)
+        } else {
+          //计算此时此刻遮罩覆盖的范围
+          const [x0, x1] = selection.map(x.invert)
+          circles.attr('fill', d => d.cx > x0 && d.cx < x1 ? 'steelblue' : null)
+        }
+      })
+
+  gb.call(brush)
+      .call(brush.move, [2, 4].map(x))
+      .call(g =>
+          g.select('.overlay')
+              .datum({type: 'selection'}) //?
+              .on('mousedown touchstart', function (d) {
+                const dx = x(2) - x(0)
+                const [cx] = d3.mouse(this) //此时此刻鼠标的横坐标
+                // console.log(d, this, cx)
+                const [x0, x1] = [cx - dx / 2, cx + dx / 2]
+                const [min, max] = x.range()
+                let move
+                if (x0 < min) {
+                  move = [min, min + dx]
+                } else if (x1 > max) {
+                  move = [max - dx, max]
+                } else {
+                  move = [x0, x1]
+                }
+                gb.call(brush.move, move)
+              })
+      )
+
+</script>
+</body>
+</html>
