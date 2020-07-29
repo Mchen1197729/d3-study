@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>d3-zoom⑧</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 400, radius = 2, k = width / height
+  const margin = {top: 10, right: 20, bottom: 25, left: 30}
+  const data = Array.from({length: 300}, () => ({
+    cx: Math.random(),
+    cy: Math.random(),
+    color: d3.schemeCategory10[Math.random() * 10 | 0]
+  }))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#efefef')
+
+  const x = d3.scaleLinear().range([margin.left, width - margin.right])
+  const y = d3.scaleLinear().range([height - margin.bottom, margin.top])
+
+  const xAxis = (g, scale) => g.attr('transform', `translate(0,${height})`)
+      .call(d3.axisTop(scale))
+      .call(g => g.select('.domain').remove())
+
+  const yAxis = (g, scale) => g.attr('transform', `translate(0,0)`)
+      .call(d3.axisRight(scale))
+      .call(g => g.select('.domain').remove())
+
+  const gridAxis = (g, x, y) => g
+      .attr("stroke", "currentColor")
+      .attr("stroke-width", .5)
+      .attr("stroke-opacity", 0.1)
+      .call(g =>
+          g.selectAll('.x') //纵向的网格线
+              .data(x.ticks(10 * k))
+              .join(
+                  //此处y1的值是0 可以省略
+                  enter => enter.append('line').attr('class', 'x').attr('y2', height),
+                  update => update,
+                  exit => exit.remove()
+              )
+              //因为tick的宽度默认是1px 所以加上0.5正好将网格线画在tick线的中间
+              .attr("x1", d => 0.5 + x(d))
+              .attr("x2", d => 0.5 + x(d))
+      )
+      .call(g =>
+          g.selectAll('.y') //横向的网格线
+              .data(y.ticks(10))
+              .join(
+                  //此处x1的值是0 可以省略
+                  enter => enter.append('line').attr('class', 'y').attr('x2', width),
+                  update => update,
+                  exit => exit.remove()
+              )
+              //因为tick的宽度默认是1px 所以加上0.5正好将网格线画在tick线的中间
+              .attr("y1", d => 0.5 + y(d))
+              .attr("y2", d => 0.5 + y(d))
+      )
+
+
+  const gx = svg.append('g')
+  gx.call(xAxis, x)
+
+  const gy = svg.append('g')
+  gy.call(yAxis, y)
+
+  const grid = svg.append('g')
+  grid.call(gridAxis, x, y)
+
+
+  const g = svg.append('g')
+      .attr('cursor', 'grab')
+
+  g.selectAll('circle')
+      .data(data)
+      .join('circle')
+      .attr('cx', d => x(d.cx))
+      .attr('cy', d => y(d.cy))
+      .attr('r', radius)
+      .attr('fill', d => d.color)
+
+  const zoom = d3.zoom()
+
+  const tx = () => d3.zoomTransform(gx.node())
+  const ty = () => d3.zoomTransform(gy.node())
+
+  svg.call(zoom.on('zoom', function () {
+    g.attr('transform', d3.event.transform)
+    const xNew = tx().rescaleX(x)
+    const yNew = ty().rescaleY(y)
+
+    gx.call(xAxis, xNew)
+    gy.call(yAxis, yNew)
+    grid.call(gridAxis, xNew, yNew)
+
+  }))
+
+
+</script>
+</body>
+</html>
