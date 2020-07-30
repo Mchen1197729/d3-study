@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-brush④</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 400, radius = 3.5
+  const randomX = d3.randomUniform(0, width) //取值范围[0,width]
+  const randomY = d3.randomUniform(0, height) //取值范围[0,height]
+  const data = Array.from({length: 2000}, () => [randomX(), randomY()])
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#efefef')
+
+  const brush = d3.brush()
+      .filter(() => !d3.event.ctrlKey && !d3.event.button
+          && (d3.event.metaKey || d3.event.target.__data__.type !== "overlay"))
+      .on("start brush end", function () {
+        const selection = d3.event.selection
+        if (selection === null) {
+          circles.attr("stroke", null)
+        } else {
+          const [[x0, y0], [x1, y1]] = selection
+          circles.attr("stroke", ([x, y]) => {
+            return x0 <= x && x <= x1
+            && y0 <= y && y <= y1
+                ? "red" : null
+          })
+        }
+      })
+
+  const circles = svg.append('g')
+      .selectAll('circle')
+      .data(data)
+      .join('circle')
+      .attr('transform', d => `translate(${d[0]},${d[1]})`)
+      .attr('r', radius)
+      .attr('fill-opacity', .2)
+
+  svg.append('g')
+      .attr('class', 'brush')
+      .call(brush)
+      .call(brush.move, [[100, 100], [200, 200]])
+      .call(g => g
+          .select(".overlay")
+          .style("cursor", "default")
+      )
+
+</script>
+</body>
+</html>

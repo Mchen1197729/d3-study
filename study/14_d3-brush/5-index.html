@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d3-brush⑤</title>
+  <script src="../lib/d3.v5.js"></script>
+</head>
+<body>
+<svg></svg>
+<script>
+  const width = 750, height = 400, radius = 3.5
+  const randomX = d3.randomUniform(0, width)
+  const randomY = d3.randomUniform(0, height)
+
+  const data = Array.from({length: 1000}, () => ({
+    cx: randomX(),
+    cy: randomY()
+  }))
+
+  const svg = d3.select('svg')
+      .attr('viewBox', [0, 0, width, height])
+      .style('background', '#efefef')
+
+  const circles = svg.append('g')
+      .attr('fill-opacity', .2)
+      .selectAll('circle')
+      .data(data)
+      .join('circle')
+      .attr('cx', d => d.cx)
+      .attr('cy', d => d.cy)
+      .attr('r', radius)
+      .attr('fill', '#000')
+
+  const brush = d3.brush()
+      //.filter(() => d3.event.ctrlKey && !d3.event.button)
+      .on('start brush end', function () {
+        const {selection} = d3.event
+        if (selection === null) { //什么都没有选择的情况
+          circles.attr('stroke', null)
+        } else {
+          const [[x0, y0], [x1, y1]] = selection
+          circles.attr('stroke', ({cx, cy}) =>
+              cx > x0 && cx < x1 && cy > y0 && cy < y1 ? 'tomato' : null)
+        }
+      })
+
+  svg.call(brush)
+      .call(brush.move, [[0, 0], [0, 0]])
+      .call(g => g
+          .select('.overlay')
+          .style('cursor', 'default')
+      )
+
+</script>
+</body>
+</html>

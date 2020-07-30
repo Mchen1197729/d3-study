@@ -49,8 +49,10 @@
       .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
       .on('start brush end', function () {
         // console.log(d3.event)
+        //d3.event.selection表示当前的刷取选择集
         const selection = d3.event.selection
-        if (selection === null) {
+        // console.log(selection.map(x.invert))
+        if (selection === null) { //???
           circles.attr('stroke', null)
         } else {
           //计算此时此刻遮罩覆盖的范围
@@ -60,14 +62,13 @@
       })
 
   gb.call(brush)
-      .call(brush.move, [2, 4].map(x))
+      .call(brush.move, [2, 4].map(x)) //[x(2),x(4)]
       .call(g =>
           g.select('.overlay')
-              .datum({type: 'selection'}) //?
-              .on('mousedown touchstart', function (d) {
+              .datum({type: 'selection'}) //???
+              .on('mousedown touchstart', function () {
                 const dx = x(2) - x(0)
                 const [cx] = d3.mouse(this) //此时此刻鼠标的横坐标
-                // console.log(d, this, cx)
                 const [x0, x1] = [cx - dx / 2, cx + dx / 2]
                 const [min, max] = x.range()
                 let move
